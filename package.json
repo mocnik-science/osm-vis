@@ -1,0 +1,24 @@
+{
+  "name": "osm-vis",
+  "version": "1.0.0",
+  "description": "OpenStreetMap Visualization",
+  "main": "",
+  "dependencies": {},
+  "devDependencies": {
+    "bower": "^1.7.9",
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-copy": "0.0.2",
+    "merge-stream": "^1.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mocnik-science/osm-vis.git"
+  },
+  "author": "Franz-Benjamin Mocnik <mail@mocnik-science.net>",
+  "license": "GPL-3.0",
+  "homepage": "https://github.com/mocnik-science/osm-vis"
+}

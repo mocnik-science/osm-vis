@@ -1,0 +1,7 @@
+.cabal-sandbox
+cabal.sandbox.config
+data
+dist
+node_modules
+src/components
+www-dist

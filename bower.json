@@ -1,0 +1,19 @@
+{
+  "name": "osm-tags-history-wiki-visualization",
+  "authors": [
+    "Franz-Benjamin Mocnik <mail@mocnik-science.net>"
+  ],
+  "license": "GPL-3",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "src/components"
+  ],
+  "dependencies": {
+    "ion.rangeSlider": "ionrangeslider#^2.1.5",
+    "jquery": "^3.1.1",
+    "underscore": "^1.8.3",
+    "d3": "^4.4.0",
+    "moment": "^2.17.1"
+  }
+}
