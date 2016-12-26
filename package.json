@@ -5,10 +5,14 @@
   "main": "",
   "dependencies": {},
   "devDependencies": {
+    "babel-preset-es2015": "^6.18.0",
     "bower": "^1.7.9",
     "del": "^2.2.0",
     "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-clean-css": "^2.3.2",
     "gulp-copy": "0.0.2",
+    "gulp-filter": "^4.0.0",
     "merge-stream": "^1.0.0"
   },
   "scripts": {

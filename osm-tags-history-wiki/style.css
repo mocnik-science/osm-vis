@@ -1,0 +1,54 @@
+html, body {
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+h1 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  height: 100px;
+  margin-left: -100px;
+  margin-top: -86px;
+  text-align: center;
+  font-size: 25px;
+  color: #ccc;
+}
+h1 em {
+  color: #999;
+}
+#svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin-top: -36px;
+}
+.node circle {
+  fill: #4682b4;
+  xstroke: #4682b4;
+  xstroke-width: 1.5px;
+}
+.node text {
+  font-size: 10px;
+  pointer-events: none;
+}
+.node-internal circle {
+  fill: #fff;
+  stroke: #4682b4;
+  stroke-width: 1.5px;
+}
+.node-internal text {
+  text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+}
+.edge {
+  fill: none;
+  stroke: #ccc;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5px;
+}
+#timesliderContainer {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+}
