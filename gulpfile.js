@@ -21,13 +21,14 @@ gulp.task('default', ['clean'], () => merge(
             'src/**',
         ])
         .pipe(copy(wwwDist)),
-    gulp.src([
-            'www/*.html',
-        ])
+    gulp.src(['www/index.html'])
         .pipe(copy(wwwDist, {prefix: 1})),
     gulp.src(pathsVisualizations, {base: './'})
         .pipe(filter(['**', '!**/*.css', '!**/*.js']))
         .pipe(copy(wwwDist)),
+    gulp.src('www/*.css', {base: './'})
+        .pipe(cleanCss())
+        .pipe(gulp.dest(wwwDist)),
     gulp.src(pathsVisualizations, {base: './'})
         .pipe(filter('**/*.css'))
         .pipe(cleanCss())

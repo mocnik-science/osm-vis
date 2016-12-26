@@ -1,0 +1,13 @@
+html, body {
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+}
+h1 {
+  text-align: center;
+  font-size: 25px;
+  color: #ccc;
+}
+h1 em {
+  color: #999;
+}

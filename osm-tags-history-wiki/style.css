@@ -1,8 +1,3 @@
-html, body {
-  font-family: 'Helvetica Neue', Helvetica, sans-serif;
-  padding: 0;
-  margin: 0;
-}
 h1 {
   position: absolute;
   left: 50%;
@@ -11,12 +6,6 @@ h1 {
   height: 100px;
   margin-left: -100px;
   margin-top: -86px;
-  text-align: center;
-  font-size: 25px;
-  color: #ccc;
-}
-h1 em {
-  color: #999;
 }
 #svg {
   position: absolute;
@@ -26,8 +15,6 @@ h1 em {
 }
 .node circle {
   fill: #4682b4;
-  xstroke: #4682b4;
-  xstroke-width: 1.5px;
 }
 .node text {
   font-size: 10px;
