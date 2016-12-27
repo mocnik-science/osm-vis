@@ -29,6 +29,13 @@ gulp.task('default', ['clean'], () => merge(
     gulp.src('www/*.css', {base: './'})
         .pipe(cleanCss())
         .pipe(gulp.dest(wwwDist)),
+    gulp.src('www/*.js', {base: './'})
+        .pipe(babel({
+            presets: ['es2015'],
+            compact: true,
+            comments: false,
+        }))
+        .pipe(gulp.dest(wwwDist)),
     gulp.src(pathsVisualizations, {base: './'})
         .pipe(filter('**/*.css'))
         .pipe(cleanCss())

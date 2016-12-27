@@ -104,7 +104,7 @@ $(document).ready(() => {
           .attr('transform', d => 'translate(' + project(d.x, d.y) + ')')
       nodeG
         .append('circle')
-          .attr('r', 2.5)
+        .attr('r', 2.5)
       nodeG
         .append('text')
           .text(d => (d.data.value) ? d.data.value : d.data.key)
@@ -159,23 +159,12 @@ $(document).ready(() => {
     }
     
     // slider
-    const slider = $('#timeslider').ionRangeSlider({
-      min: datesMin.format('x'),
-      max: datesMax.format('x'),
-      from: datesMin.format('x') / 3 * 2 + datesMax.format('x') / 3,
-      grid: true,
-      force_edges: true,
-      hide_min_max: true,
-      hide_from_to: true,
-      grid_num: 6,
-      prettify: n => moment(n, 'x').format('LL'),
-      keyboard: true,
-      keyboard_step: 2,
-      onChange: n => redraw(moment(n.from, 'x')),
-      onUpdate: n => redraw(moment(n.from, 'x')),
+    sliderTime({
+      min: datesMin,
+      max: datesMax,
+      fromFraction: [2, 1],
+      callback: redraw,
+      width: diameter,
     })
-    $('#timeslider').data('ionRangeSlider').reset()
-    $('#timesliderContainer').css('marginLeft', -diameter/2)
-    $('#timesliderContainer .irs').css('width', diameter)
   })
 })

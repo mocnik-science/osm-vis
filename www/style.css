@@ -11,3 +11,8 @@ h1 {
 h1 em {
   color: #999;
 }
+#svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}

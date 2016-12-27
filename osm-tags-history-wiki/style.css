@@ -8,9 +8,6 @@ h1 {
   margin-top: -86px;
 }
 #svg {
-  position: absolute;
-  left: 50%;
-  top: 50%;
   margin-top: -36px;
 }
 .node circle {
