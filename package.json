@@ -13,7 +13,8 @@
     "gulp-clean-css": "^2.3.2",
     "gulp-copy": "0.0.2",
     "gulp-filter": "^4.0.0",
-    "merge-stream": "^1.0.0"
+    "jsonfile": "^2.4.0",
+    "merge-stream": "^1.0.0",
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
