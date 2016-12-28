@@ -7,6 +7,7 @@ let del = require('del')
 let filter = require('gulp-filter')
 let gulp = require('gulp')
 let merge = require('merge-stream')
+let sass = require('gulp-sass')
 
 let wwws = ['./osm-tags-history-wiki']
 let wwwDist = './www-dist/'
@@ -15,6 +16,18 @@ let pathsVisualizations = [
     'osm-changes-map/**',
     'osm-tags-history-wiki/**',
 ]
+
+const makeCss = g =>
+    g.pipe(sass({
+        outputStyle: 'compressed',
+    }))
+    .pipe(cleanCss())
+const makeJ = g =>
+    .pipe(babel({
+        presets: ['es2015'],
+        compact: true,
+        comments: false,
+    }))
 
 gulp.task('default', ['clean'], () => merge(
     gulp.src([
@@ -27,27 +40,13 @@ gulp.task('default', ['clean'], () => merge(
     gulp.src(pathsVisualizations, {base: './'})
         .pipe(filter(['**', '!**/*.css', '!**/*.js']))
         .pipe(copy(wwwDist)),
-    gulp.src('www/*.css', {base: './'})
-        .pipe(cleanCss())
+    makeCss(gulp.src('www/*.css', {base: './'}))
         .pipe(gulp.dest(wwwDist)),
-    gulp.src('www/*.js', {base: './'})
-        .pipe(babel({
-            presets: ['es2015'],
-            compact: true,
-            comments: false,
-        }))
+    makeJs(gulp.src('www/*.js', {base: './'}))
         .pipe(gulp.dest(wwwDist)),
-    gulp.src(pathsVisualizations, {base: './'})
-        .pipe(filter('**/*.css'))
-        .pipe(cleanCss())
+    makeCss(gulp.src(pathsVisualizations, {base: './'}).pipe(filter('**/*.css')))
         .pipe(gulp.dest(wwwDist)),
-    gulp.src(pathsVisualizations, {base: './'})
-        .pipe(filter('**/*.js'))
-        .pipe(babel({
-            presets: ['es2015'],
-            compact: true,
-            comments: false,
-        }))
+    makeJs(gulp.src(pathsVisualizations, {base: './'}).pipe(filter('**/*.js')))
         .pipe(gulp.dest(wwwDist))
     ))
 gulp.task('clean', () => del([wwwDist]))
