@@ -1,6 +1,5 @@
 const width = .8 * window.innerWidth
 const height = .8 * window.innerHeight
-const animationDuration = 100
 
 $(document).ready(() => {
   const svg = d3.select('#svg')
@@ -16,10 +15,11 @@ $(document).ready(() => {
       // prepare data
       console.debug(data)
       
+      dataTopoJson.objects.countries.geometries = dataTopoJson.objects.countries.geometries.filter(d => d.properties.iso_a3 != 'ATA')
       const dataGeoJson = topojson.feature(dataTopoJson, dataTopoJson.objects.countries)
       
       // draw countries
-      const projection = d3.geoEquirectangular() // d3.geoMercator()
+      const projection = d3.geoMercator()
         .center([0, 50])
         .fitSize([width, height], dataGeoJson)
       const path = d3.geoPath().projection(projection)
@@ -32,18 +32,19 @@ $(document).ready(() => {
           .attr('d', path)
       
       // draw mean solar time
+      const bbox = d3.geoBounds(dataGeoJson)
       const appendMeanSolarTime = (className, label) => {
         const mst = svg.append('g')
           .attr('class', className + ' meanSolarTime')
         mst.append('text')
           .attr('x', 6)
-          .attr('y', projection([0, -90])[1] - 6)
+          .attr('y', projection([0, bbox[0][1]])[1])
           .text(label)
         mst.append('line')
           .attr('x1', 0)
-          .attr('y1', projection([0, -90])[1])
+          .attr('y1', projection([0, bbox[0][1]])[1] + 6)
           .attr('x2', 0)
-          .attr('y2', projection([0, 90])[1])
+          .attr('y2', projection([0, bbox[1][1]])[1] - 6)
       }
       appendMeanSolarTime('meanSolarTime8', '8:00 am')
       appendMeanSolarTime('meanSolarTime12', '12:00 (noon)')
@@ -61,18 +62,15 @@ $(document).ready(() => {
             .append('circle')
             .attr('class', 'changes')
             .attr('transform', d => 'translate(' + projection([d.lon, d.lat]) + ')')
-            .attr('r', d => Math.log(Math.sqrt(d.count)) * 1)
+            .attr('r', d => Math.log(Math.sqrt(d.count)) * 1.5)
         changes
           .exit()
           .remove()
         
         // draw mean solar time
-        svg.selectAll('.meanSolarTime8')
-          .attr('transform', d => 'translate(' + projection([360 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 8), 0])[0] + ', 0)')
-        svg.selectAll('.meanSolarTime12')
-          .attr('transform', d => 'translate(' + projection([360 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 12), 0])[0] + ', 0)')
-        svg.selectAll('.meanSolarTime16')
-          .attr('transform', d => 'translate(' + projection([360 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 16), 0])[0] + ', 0)')
+        svg.selectAll('.meanSolarTime8').attr('transform', d => 'translate(' + projection([360 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 8), 0])[0] + ', 0)')
+        svg.selectAll('.meanSolarTime12').attr('transform', d => 'translate(' + projection([360 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 12), 0])[0] + ', 0)')
+        svg.selectAll('.meanSolarTime16').attr('transform', d => 'translate(' + projection([360 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 16), 0])[0] + ', 0)')
       }
       
       // slider
