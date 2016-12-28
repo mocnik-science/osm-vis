@@ -16,3 +16,11 @@ h1 em {
   left: 50%;
   top: 50%;
 }
+#svg svg {
+  overflow: visible;
+}
+#timeslider {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+}

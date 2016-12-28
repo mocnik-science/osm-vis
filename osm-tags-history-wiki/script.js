@@ -165,6 +165,7 @@ $(document).ready(() => {
       fromFraction: [2, 1],
       callback: redraw,
       width: diameter,
+      playingHide: false,
     })
   })
 })
