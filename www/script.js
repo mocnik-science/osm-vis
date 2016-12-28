@@ -15,8 +15,8 @@ const sliderTime = settings => {
     label: null,
     playing: false,
     playingHide: true,
-    playingSpeed: 30,
-    playingInterval: 30,
+    playingSpeed: 1,
+    playingFrameRate: 30,
     playingRestartOnEnd: true,
   }, settings)
   const options = {
@@ -91,7 +91,7 @@ const sliderTime = settings => {
   const initPlaying = () => {
     $('.timesliderPlaying').text(settings.playing ? 'stop' : 'play')
     if (settings.playing) intervalTimer = setInterval(() => {
-      if (sliderIncrementFrom(settings.playingSpeed)) stopPlaying()
+      if (sliderIncrementFrom(settings.playingSpeed * settings.playingFrameRate)) stopPlaying()
     }, settings.playingInterval)
     else clearInterval(intervalTimer)
   }

@@ -74,7 +74,7 @@ $(document).ready(() => {
         .enter()
         .append('path')
         .style('opacity', 0)
-        .attr('class', 'edge')
+        .classed('edge', true)
         .attr('d', d => 'M' + project(d.x, d.y) + 'C' + project(d.x, (d.y + d.parent.y) / 2) + ' ' + project(d.parent.x, (d.y + d.parent.y) / 2) + ' ' + project(d.parent.x, d.parent.y))
       edge
         .exit()
@@ -100,7 +100,10 @@ $(document).ready(() => {
         .enter()
         .append('g')
           .style('opacity', 0)
-          .attr('class', d => 'node' + (d.children ? ' node-internal' : ' node-leaf') + (d.data.value !== undefined && _(d.data.history).some(h => (h[0].isAfter(lastRedraw) && h[0].isSameOrBefore(m)) || h[0].isAfter(m) && h[0].isSameOrBefore(lastRedraw)) ? ' event' : ''))
+          .classed('node', true)
+          .classed('node-internal', d => d.children)
+          .classed('node-leaf', d => !d.children)
+          .classed('event', d => d.data.value !== undefined && _(d.data.history).some(h => (h[0].isAfter(lastRedraw) && h[0].isSameOrBefore(m)) || h[0].isAfter(m) && h[0].isSameOrBefore(lastRedraw)))
           .attr('transform', d => 'translate(' + project(d.x, d.y) + ')')
       nodeG
         .append('circle')
@@ -109,9 +112,6 @@ $(document).ready(() => {
         .append('text')
           .text(d => (d.data.value) ? d.data.value : d.data.key)
           .attr('dy', '.31em')
-          // .attr('x', d => d.x < 180 === !d.children ? 6 : -6)
-          // .style('text-anchor', d => d.x < 180 === !d.children ? 'start' : 'end')
-          // .attr('transform', d => 'rotate(' + (d.x < 180 ? d.x - 90 : d.x + 90) + ')')
           .attr('x', d => !d.children ? 6 : -6)
           .style('text-anchor', d => !d.children ? 'start' : 'end')
           .attr('transform', d => 'rotate(' + (d.x - 90) + ')')
@@ -132,27 +132,23 @@ $(document).ready(() => {
         svg.selectAll('.node').select('text')
             .transition()
             .duration(animationDuration)
-              // .attr('x', d => d.x < 180 === !d.children ? 6 : -6)
-              // .style('text-anchor', d => d.x < 180 === !d.children ? 'start' : 'end')
-              // .attr('transform', d => 'rotate(' + (d.x < 180 ? d.x - 90 : d.x + 90) + ')')
             .attr('x', d => !d.children ? 6 : -6)
             .style('text-anchor', d => !d.children ? 'start' : 'end')
             .attr('transform', d => 'rotate(' + (d.x - 90) + ')')
       }, animationDelay)
       
       // animate nodes which have a modification in their history
-      d3.timeout(() => {
-        svg.selectAll('.event').select('circle')
-          .transition()
-          .duration(animationEventHold)
+      svg.selectAll('.event')
+        .classed('event', false)
+        .select('circle')
+        .transition()
+        .delay(animationEventDelay)
+        .duration(animationEventHold)
           .attr('r', 5)
-        d3.timeout(() => {
-        svg.selectAll('.event').select('circle')
-          .transition()
-          .duration(animationEventHold)
-            .attr('r', 2.5)
-        }, 2 * animationEventHold)
-      }, animationEventDelay)
+        .transition()
+        .delay(1.3 * animationEventHold)
+        .duration(animationEventHold)
+          .attr('r', 2.5)
       
       // save m to lastRedraw
       lastRedraw = m
@@ -166,6 +162,8 @@ $(document).ready(() => {
       callback: redraw,
       width: diameter,
       playingHide: false,
+      playingSpeed: 1250,
+      playingFrameRate: 300,
     })
   })
 })

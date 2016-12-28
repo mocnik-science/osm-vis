@@ -28,14 +28,15 @@ $(document).ready(() => {
         .data(dataGeoJson.features)
         .enter()
           .append('path')
-          .attr('class', 'country')
+          .classed('country', true)
           .attr('d', path)
       
       // draw mean solar time
       const bbox = d3.geoBounds(dataGeoJson)
       const appendMeanSolarTime = (className, label) => {
         const mst = svg.append('g')
-          .attr('class', className + ' meanSolarTime')
+          .classed('meanSolarTime', true)
+          .classed(className, true)
         mst.append('text')
           .attr('x', 6)
           .attr('y', projection([0, bbox[0][1]])[1])
@@ -60,7 +61,7 @@ $(document).ready(() => {
         changes
           .enter()
             .append('circle')
-            .attr('class', 'changes')
+            .classed('changes', true)
             .attr('transform', d => 'translate(' + projection([d.lon, d.lat]) + ')')
             .attr('r', d => Math.log(Math.sqrt(d.count)) * 1.5)
         changes
@@ -85,7 +86,7 @@ $(document).ready(() => {
         width: width,
         label: 'UTC',
         playingHide: false,
-        playingSpeed: 60,
+        playingSpeed: 2,
       })
     })
   })
