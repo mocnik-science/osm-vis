@@ -12,6 +12,7 @@ let wwws = ['./osm-tags-history-wiki']
 let wwwDist = './www-dist/'
 
 let pathsVisualizations = [
+    'osm-changes-map/**',
     'osm-tags-history-wiki/**',
 ]
 

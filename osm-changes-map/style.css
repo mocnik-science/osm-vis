@@ -1,0 +1,32 @@
+#svg {
+  margin-top: 36px;
+}
+#svg .country {
+  fill: #eee;
+  stroke: #fff;
+  stroke-width: 2px;
+}
+#svg .changes {
+  fill: rgba(0, 0, 0, .25);
+}
+#svg .meanSolarTime text {
+  font-size: 10px;
+  font-weight: 300;
+}
+#svg .meanSolarTime line {
+  stroke-width: 2px;
+}
+#svg .meanSolarTime8 text,
+#svg .meanSolarTime16 text {
+  fill: #7eaacd;
+}
+#svg .meanSolarTime12 text {
+  fill: #4682b4;
+}
+#svg .meanSolarTime8 line,
+#svg .meanSolarTime16 line {
+  stroke: #a3c2db;
+}
+#svg .meanSolarTime12 line {
+  stroke: #4682b4;
+}
