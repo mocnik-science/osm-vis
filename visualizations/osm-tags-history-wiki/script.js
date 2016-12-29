@@ -27,7 +27,7 @@ $(document).ready(() => {
     }
     
     // diagram
-    const svg = d3.select('#svg')
+    const svg = d3.select('.svg')
       .append('svg')
         .attr('width', diameter)
         .attr('height', diameter)
@@ -38,7 +38,7 @@ $(document).ready(() => {
     
     var angle = 0;
     const computeAngle = () => {
-      const box = d3.select('#svg').select('svg').node().getBoundingClientRect()
+      const box = d3.select('.svg').select('svg').node().getBoundingClientRect()
       const centerX = d3.event.x - box.left - box.width / 2
       const centerY = d3.event.y - box.top - box.height / 2
       return (Math.atan (centerY / centerX) + (centerX < 0 ? Math.PI : 0)) / (2 * Math.PI) * 180 
@@ -53,7 +53,7 @@ $(document).ready(() => {
     const rotateEnd = () => {
       angle = angle + computeAngle()
     }
-    d3.select('#svg').call(d3.drag().on('start', rotateStart).on('drag', rotate).on('end', rotateEnd))
+    d3.select('.svg').call(d3.drag().on('start', rotateStart).on('drag', rotate).on('end', rotateEnd))
     
     const stratify = d3.stratify().id(d => d.id).parentId(d => d.parentId)
     const tree = d3.tree()

@@ -16,6 +16,9 @@ h1 {
 h1, h2, h3, h4, h5, h6 {
   font-family: $fontFamilyAlternative;
 }
+h1:first-letter, h2:first-letter, h3:first-letter, h4:first-letter, h5:first-letter, h6:first-letter {
+  text-transform: uppercase;
+}
 a {
   color: $textColor;
   text-decoration: underline;
@@ -61,7 +64,8 @@ body.index {
     width: 760px;
     margin: 20px auto;
     text-align: center;
-    font-size: 12px;
+    font-size: $fontSizeSemiSmall;
+    font-weight: 300;
     color: $textColorLight;
     a {
       color: $textColorLight;
@@ -102,12 +106,46 @@ body.index {
   }
 }
 /** SVG **/
-#svg {
+.svg svg {
+  overflow: visible;
+}
+.svg.hasCaption {
+  padding-bottom: 30px!important;
+}
+.svg h3 {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  svg {
-    overflow: visible;
+  bottom: -40px;
+  left: 0;
+  padding: 10px;
+  .subcaption {
+    display: block;
+    margin-top: -1px;
+    font-size: $fontSizeSemiSmall;
+    font-family: $fontFamily;
+    font-weight: 300;
+    color: $textColorLight;
+  }
+}
+body.fixed {
+  .svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+  }
+}
+body.scrolling {
+  margin-top: 100px;
+  .svg {
+    position: relative;
+    margin: 20px auto 100px auto;
+  }
+  h1 {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    margin-top: 0;
+    padding-bottom: 10px;
+    background: rgba(255, 255, 255, .96);
   }
 }
 /** TIME SLIDER **/
@@ -144,8 +182,8 @@ body.index {
 }
 /** PAGE **/
 .back {
+  position: fixed;
   display: block;
-  position: absolute;
   z-index: 1000;
   left: 18px;
   top: 18px;
@@ -159,7 +197,7 @@ body.index {
   color: $textColor;
 }
 .overlay {
-  position: absolute;
+  position: fixed;
   z-index: 9999;
   top: 0;
   left: 0;
@@ -173,7 +211,7 @@ $infoButtonPaddingSize: 8px;
 $infoButtonBorderWidth: 1px;
 $infoTransitionDuration: .2s;
 .info {
-  position: absolute;
+  position: fixed;
   z-index: 10000;
   top: 20px;
   right: 20px;

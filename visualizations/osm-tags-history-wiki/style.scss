@@ -12,7 +12,7 @@ h1 {
   margin-left: -$h1Width / 2;
   margin-top: -$h1Height / 2 + $svgMarginTop - 12px;
 }
-#svg {
+.svg {
   margin-top: $svgMarginTop;
 }
 .node {

@@ -2,7 +2,7 @@ const width = .8 * window.innerWidth
 const height = .8 * window.innerHeight
 
 $(document).ready(() => {
-  const svg = d3.select('#svg')
+  const svg = d3.select('.svg')
     .append('svg')
     .attr('width', width)
     .attr('height', height)
