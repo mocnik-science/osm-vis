@@ -1,17 +1,17 @@
 'use strict'
 
-let babel = require('gulp-babel')
-let cleanCss = require('gulp-clean-css')
-let copy = require('gulp-copy')
-let del = require('del')
-let filter = require('gulp-filter')
-let gulp = require('gulp')
-let merge = require('merge-stream')
-let sass = require('gulp-sass')
+const babel = require('gulp-babel')
+const cleanCss = require('gulp-clean-css')
+const copy = require('gulp-copy')
+const del = require('del')
+const filter = require('gulp-filter')
+const gulp = require('gulp')
+const merge = require('merge-stream')
+const sass = require('gulp-sass')
 
-let wwwDist = './www-dist/'
-let baseVisualizations = './visualizations/'
-let pathVisualizations = baseVisualizations + '**'
+const wwwDist = './www-dist/'
+const baseVisualizations = './visualizations/'
+const pathVisualizations = baseVisualizations + '**'
 
 const makeCss = g =>
     g.pipe(sass({
@@ -47,4 +47,5 @@ gulp.task('default', ['clean'], () => merge(
     makeJs(gulp.src(pathVisualizations, {base: baseVisualizations}).pipe(filter('**/*.js')))
         .pipe(gulp.dest(wwwDist))
     ))
+
 gulp.task('clean', () => del([wwwDist]))

@@ -100,9 +100,9 @@ $(document).ready(() => {
           datasetCountries,
         ],
         infoLibraries: libsDefault.concat([
+          libIonRangeSlider,
           libMomentRound,
           libTopoJSON,
-          libIonRangeSlider,
         ]),
         init: () => {
           initTooltip({
