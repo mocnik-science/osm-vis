@@ -23,9 +23,8 @@ urlWikiOverview lang = urlWikiBase ++ urlWikiPrefix ++ langPrefix lang ++ "Map_F
 consideredLanguages :: [Language]
 consideredLanguages = [
     Language "english" "en" "",
-    Language "german" "de" "de:",
-    Language "french" "fr" "fr:",
-    Language "swedish" "sv" "sv:"]
+    Language "german" "de" "de:"]
+--    Language "french" "fr" "fr:"]
 urlWikiRaw :: String -> String
 urlWikiRaw url = urlWikiBase ++ "/w/index.php?title=" ++ url ++ "&action=raw"
 stopwordsFile :: Language -> String
@@ -36,7 +35,9 @@ outputFile = "../../data/osm-tags-word-frequency-wiki.json"
 ignoreWordsWithCharacter :: String
 ignoreWordsWithCharacter = ['{', '}', '[', ']', '<', '>', '*', '=', '|', '&']
 charactersToRemoveFromRaw :: String
-charactersToRemoveFromRaw = ['.', '(', ')', '\'', ',', '?', ':', ';']
+charactersToRemoveFromRaw = ['.', '(', ')', ',', '?', ':', ';']
+charactersToRemoveFromRawAtEnd :: String
+charactersToRemoveFromRawAtEnd = ['\'', '-']
 wordsToIgnore :: [String]
 wordsToIgnore = ["key", "value", "image", "description", "onnode", "onway", "onarea", "onrelation", "combination", "implies", "seealso", "status", "statuslink", "yes", "no", "decrepated", "approved"]
 minWordLength :: Int
@@ -55,8 +56,8 @@ main :: IO ()
 main = do
     wordFrequencies <- forM consideredLanguages $ \lang -> do
         tagUrls <- listOfTagUrls lang . urlWikiOverview $ lang
-        ws <- rawToWords lang . concat =<< mapM downloadRaw tagUrls
-        return $ WordFrequency (langName lang) (take numberOfWords . computeWordFrequency $ (ws :: [String]))
+        wss <- mapM (rawToWords lang) =<< mapM downloadRaw tagUrls
+        return $ WordFrequency (langName lang) (take numberOfWords . computeWordFrequency . concat $ wss) (take numberOfWords . computeWordFrequency . concatMap nubOrd $ wss)
     timestamp' <- formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S%Z" <$> getCurrentTime
     C.writeFile outputFile . encode $ Result timestamp' dataDescription' dataSource' (urlWikiOverview . head $ consideredLanguages) wordFrequencies
 
@@ -69,7 +70,7 @@ instance ToJSON Result where
 
 -- --== WORD FREQUENCY
 
-data WordFrequency = WordFrequency {language :: String, frequency :: [(String, Int)]} deriving (Generic, Show)
+data WordFrequency = WordFrequency {language :: String, frequency :: [(String, Int)], frequencyOnlyOncePerTag :: [(String, Int)]} deriving (Generic, Show)
 
 instance ToJSON WordFrequency where
     toEncoding = genericToEncoding defaultOptions
@@ -92,14 +93,19 @@ downloadRaw :: URL -> IO String
 downloadRaw = fmap snd . flip curlGetString [] . urlWikiRaw . fromMaybe "" . stripPrefix urlWikiPrefix
 
 rawToWords :: Language -> String -> IO [String]
-rawToWords lang = ignoreWords3 . ignoreWords2 . map removeCharacters . ignoreWords1 . map (map toLower) . ignoreWords0 . words where
-    ignoreWords0 = filter ((>=) minWordLength . length)
+rawToWords lang = fmap ignoreWords4 . ignoreWords3 . map (removeCharacters2 . removeCharacters1) . ignoreWords2 . ignoreWords1 . map (map toLower) . words where
     ignoreWords1 = flip (foldl (flip $ filter . notElem)) ignoreWordsWithCharacter
     ignoreWords2 = filter (`notElem` wordsToIgnore)
     ignoreWords3 ws = do
         stopwords <- filter (not . isPrefixOf "%") . lines <$> (readFile . stopwordsFile) lang
         return . filter (`notElem` stopwords) $ ws
-    removeCharacters = filter (`notElem` charactersToRemoveFromRaw)
+    ignoreWords4 = filter ((>= minWordLength) . length)
+    removeCharacters1 = filter (`notElem` charactersToRemoveFromRaw)
+    removeCharacters2 = reverse . f . reverse . f where
+        f [] = []
+        f xss@(x:xs) = if x `elem` charactersToRemoveFromRawAtEnd
+            then f xs
+            else xss
 
 -- --== COMPUTE WORD FREQUENCY
 

@@ -1,3 +1,13 @@
+% additional
+autres
+c'est
+cette
+d'autres
+d'une
+n'est
+pour
+pouvez
+
 % http://www.ranks.nl/stopwords/french
 alors
 au
@@ -44,7 +54,8 @@ hors
 ici
 il
 ils
-je	juste
+je
+juste
 la
 le
 les
@@ -89,7 +100,8 @@ sien
 son
 sont
 sous
-soyez	sujet
+soyez
+sujet
 sur
 ta
 tandis

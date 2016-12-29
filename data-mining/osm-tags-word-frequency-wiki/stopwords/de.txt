@@ -1,5 +1,28 @@
-% http://www.ranks.nl/stopwords/german
+% additional
+andere
+anderen
+denen
+diese
+diesem
+falls
+haben
+hinzu
+kann
+keine
+nicht
+sein
+sind
+sollte
+sollten
+werden
+wird
+wurde
+wurden
+zwischen
 
+siehe
+
+% http://www.ranks.nl/stopwords/german
 aber
 als
 am
@@ -49,7 +72,8 @@ hatte
 hatten
 hattest
 hattet
-hier	hinter
+hier
+hinter
 ich
 ihr
 ihre
@@ -98,7 +122,8 @@ sonst
 soweit
 sowie
 und
-unser	unsere
+unser
+unsere
 unter
 vom
 von
