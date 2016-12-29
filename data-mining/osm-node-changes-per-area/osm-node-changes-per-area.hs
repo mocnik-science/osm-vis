@@ -28,13 +28,25 @@ urlFile n = "https://planet.openstreetmap.org/replication/day/" ++ (justifyRight
 outputFile :: String
 outputFile = "../../data/osm-node-changes-per-area.json"
 
+dataDescription' :: String
+dataDescription' = "Statistics on node changes of OpenStreetMap data"
+dataSource' :: String
+dataSource' = "OpenStreetMap project, <a href=\"http://opendatacommons.org/licenses/odbl/\" target=\"_blank\">ODbL</a>"
+
 -- --== MAIN
 
 main :: IO ()
 main = do
     (latestTimestamp', url', nodeChanges') <- downloadAndParseXml
     let nodeChangesStatistics = aggregateNodeChanges . map roundNodeChange $ nodeChanges'
-    C.writeFile outputFile . encode $ Result latestTimestamp' "Statistics on node changes of OpenStreetMap data" "OpenStreetMap project, <a href=\"http://opendatacommons.org/licenses/odbl/\" target=\"_blank\">Open Data Commons Open Database License (ODbL)</a>" url' nodeChangesStatistics
+    C.writeFile outputFile . encode $ Result latestTimestamp' dataDescription' dataSource' url' nodeChangesStatistics
+
+-- --== RESULT
+
+data Result = Result {dataTimestamp :: String, dataDescription :: String, dataSource :: String, dataUrl :: String, nodeChanges :: [NodeChangeStatistics]} deriving Generic
+
+instance ToJSON Result where
+    toEncoding = genericToEncoding defaultOptions
 
 -- --== DOWNLOAD FILES
 
@@ -45,13 +57,6 @@ downloadAndParseXml = do
     let latestTimestamp = nothingToError "[ERROR] Could not read timestamp" . mapJust (replaceElementInList '\\' "") . headMay . mapMaybe (stripPrefix "timestamp=") $ info
     nodeChanges' <- parseChangesXml . GZip.decompress . leftToError "[ERROR] Could not read file" <$> (openLazyURI . urlFile) latestSequenceNumber
     return (latestTimestamp, urlFile latestSequenceNumber, nodeChanges')
-
--- --== RESULT
-
-data Result = Result {timestmap :: String, description :: String, source :: String, url :: String, nodeChanges :: [NodeChangeStatistics]} deriving Generic
-
-instance ToJSON Result where
-    toEncoding = genericToEncoding defaultOptions
 
 -- --== NODECHANGE
 

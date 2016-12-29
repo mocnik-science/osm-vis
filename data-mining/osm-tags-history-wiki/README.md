@@ -28,4 +28,4 @@ This application is written and maintained by Franz-Benjamin Mocnik, <mail@mocni
 
 (c) by Franz-Benjamin Mocnik, 2016.
 
-The code is licensed under the [GPL-3](https://github.com/mocnik-science/osm-vis/blob/master/data-mining/osm-tags-history-wiki-data/LICENSE.md).
+The code is licensed under the [GPL-3](http://github.com/mocnik-science/osm-vis/blob/master/data-mining/osm-tags-history-wiki-data/LICENSE.md).

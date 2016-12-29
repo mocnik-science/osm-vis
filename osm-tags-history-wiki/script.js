@@ -6,9 +6,9 @@ const animationEventDelay = 450
 const animationEventHold = 600
 
 $(document).ready(() => {
-  d3.json('../data/osm-tags-history-wiki.json', data => {
+  d3.json('../data/osm-tags-history-wiki.json', dataset => {
     // prepare the data
-    data = _(data).map(d => {
+    const data = _(dataset.descriptionHistory).map(d => {
       d.history = _(d.history).map(h => [moment(h[0]), h[1]])
       return d
     })
@@ -34,7 +34,7 @@ $(document).ready(() => {
       .style('margin-left', -diameter / 2)
       .style('margin-top', -diameter / 2)
       .append('g')
-      .attr('transform', `translate(${diameter/2},${diameter/2})`)
+      .attr('transform', `translate(${diameter / 2}, ${diameter / 2})`)
     
     var angle = 0;
     const computeAngle = () => {
@@ -48,7 +48,7 @@ $(document).ready(() => {
     }
     const rotate = () => {
       const a = computeAngle()
-      svg.attr('transform', `translate(${diameter/2},${diameter/2}) rotate(${angle + a})`)
+      svg.attr('transform', `translate(${diameter / 2}, ${diameter / 2}) rotate(${angle + a})`)
     }
     const rotateEnd = () => {
       angle = angle + computeAngle()
@@ -75,7 +75,7 @@ $(document).ready(() => {
         .append('path')
         .style('opacity', 0)
         .classed('edge', true)
-        .attr('d', d => 'M' + project(d.x, d.y) + 'C' + project(d.x, (d.y + d.parent.y) / 2) + ' ' + project(d.parent.x, (d.y + d.parent.y) / 2) + ' ' + project(d.parent.x, d.parent.y))
+        .attr('d', d => `M${project(d.x, d.y)}C${project(d.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, d.parent.y)}`)
       edge
         .exit()
         .remove()
@@ -89,7 +89,7 @@ $(document).ready(() => {
         svg.selectAll('.edge')
           .transition()
           .duration(animationDuration)
-          .attr('d', d => 'M' + project(d.x, d.y) + 'C' + project(d.x, (d.y + d.parent.y) / 2) + ' ' + project(d.parent.x, (d.y + d.parent.y) / 2) + ' ' + project(d.parent.x, d.parent.y))
+          .attr('d', d => `M${project(d.x, d.y)}C${project(d.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, d.parent.y)}`)
       }, animationDelay)
       
       // draw nodes
@@ -114,7 +114,7 @@ $(document).ready(() => {
           .attr('dy', '.31em')
           .attr('x', d => !d.children ? 6 : -6)
           .style('text-anchor', d => !d.children ? 'start' : 'end')
-          .attr('transform', d => 'rotate(' + (d.x - 90) + ')')
+          .attr('transform', d => `rotate(${d.x - 90})`)
       node
         .exit()
         .remove()
@@ -128,13 +128,13 @@ $(document).ready(() => {
         svg.selectAll('.node')
           .transition()
           .duration(animationDuration)
-            .attr('transform', d => 'translate(' + project(d.x, d.y) + ')')
+            .attr('transform', d => `translate(${project(d.x, d.y)})`)
         svg.selectAll('.node').select('text')
             .transition()
             .duration(animationDuration)
             .attr('x', d => !d.children ? 6 : -6)
             .style('text-anchor', d => !d.children ? 'start' : 'end')
-            .attr('transform', d => 'rotate(' + (d.x - 90) + ')')
+            .attr('transform', d => `rotate(${d.x - 90})`)
       }, animationDelay)
       
       // animate nodes which have a modification in their history
@@ -164,6 +164,42 @@ $(document).ready(() => {
       playingHide: false,
       playingSpeed: 1250,
       playingFrameRate: 300,
+    })
+    
+    // page
+    initPage({
+      infoDescription: 'The core tags, which are used in OSM to descripe nodes, ways, and relations, are documented in the <a href="https://wiki.openstreetmap.org/wiki/Map_Features" target="_blank">OSM wiki</a>. This documentation serves as an ontology but there is no obligation to not use other tags. This visualization explores how the documented tags, i.e., keys and values, have developed over time.',
+      infoIdea: [alexanderZipf, franzBenjaminMocnik],
+      infoProgramming: [franzBenjaminMocnik],
+      infoData: [
+        dataset,
+      ],
+      init: () => {
+        initTooltip({
+          selector: '.node-internal:first',
+          text: 'The keys are depicted in the inner circle',
+        })
+        initTooltip({
+          selector: '.node-leaf:first',
+          text: 'The values are depicted in the outer circle',
+        })
+        initTooltip({
+          selector: `.node:eq(${Math.round($('.node').length / 2)})`,
+          text: 'Drag to rotate',
+        })
+        initTooltip({
+          selector: `.irs-slider`,
+          text: 'Drag to change the point in time',
+          positionMy: 'bottom left',
+          positionAt: 'top center',
+        })
+        initTooltip({
+          selector: '.timesliderPlaying',
+          text: 'Click here to animate time',
+          positionMy: 'bottom right',
+          positionAt: 'top right',
+        })
+      },
     })
   })
 })

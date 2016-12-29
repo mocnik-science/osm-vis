@@ -1,0 +1,279 @@
+@import '../www/definitions.scss';
+
+html, body {
+  font-family: $fontFamily;
+  padding: 0;
+  margin: 0;
+  color: $textColor;
+}
+h1 {
+  position: relative;
+  z-index: 1000;
+  text-align: center;
+  font-size: 25px;
+  color: $textColorLight;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: $fontFamilyAlternative;
+}
+a {
+  color: $textColor;
+  text-decoration: underline;
+}
+/** LOGO **/
+.logo:before {
+  content: 'OSM';
+  font-size: 100%;
+  font-weight: 500;
+  font-family: 'Helvetica Neue', Helvetica, sans-serif;
+  color: $colorGreyLight;
+}
+.logo:after {
+  content: 'vis';
+  font-size: 110%;
+  font-family: 'Waiting for the Sunrise', cursive;
+  color: $colorPrimaryDark;
+}
+/** INDEX PAGE **/
+.h1-logo {
+  text-align: center;
+  font-size: 50px;
+  margin-top: 120px;
+  margin-bottom: -20px;
+}
+.h1-text {
+  @extend h1;
+  margin-bottom: 40px;
+}
+body.index {
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+  .description {
+    width: 760px;
+    margin: 40px auto 20px auto;
+    text-align: center;
+    font-style: italic;
+  }
+  .comments {
+    width: 760px;
+    margin: 20px auto;
+    text-align: center;
+    font-size: 12px;
+    color: $textColorLight;
+    a {
+      color: $textColorLight;
+    }
+  }
+}
+.previews {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 40px 0 60px 0;
+  a {
+    width: 180px;
+    height: 220px;
+    margin: 10px;
+    border-radius: 3px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, .16);
+    text-decoration: none;
+    text-align: center;
+    color: $textColorLight;
+    font-size: 12px;
+    span {
+      display: block;
+      width: 180px;
+      height: 180px;
+      overflow: hidden;
+      margin-bottom: 13px;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      transition: transform .8s ease-in-out;
+    }
+    img:hover {
+      transform: scale(1.2);
+    }
+  }
+}
+/** SVG **/
+#svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  svg {
+    overflow: visible;
+  }
+}
+/** TIME SLIDER **/
+#timeslider {
+  position: absolute;
+  left: 50%;
+  bottom: 10px;
+  .timesliderLabel {
+    position: absolute;
+    top: 4px;
+    text-align: center;
+    font-size: $fontSizeSmall;
+    color: $textColorLight;
+  }
+  .timesliderPlaying {
+    position: absolute;
+    top: 4px;
+    text-align: right;
+    font-size: $fontSizeSmall;
+    color: $colorPrimaryLightText;
+    cursor: pointer;
+  }
+}
+/** PAGE **/
+.back {
+  display: block;
+  position: absolute;
+  z-index: 1000;
+  left: 18px;
+  top: 18px;
+  text-decoration: none;
+  color: $colorPrimaryLightText;
+}
+.qtip-info {
+  border: 1px solid #ffecb3!important;
+  background-color: #ffffa3!important;
+  font-size: $fontSize;
+  color: $textColor;
+}
+.overlay {
+  position: absolute;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+  opacity: .6;
+}
+$infoSymbolSize: 16px;
+$infoButtonPaddingSize: 8px;
+$infoButtonBorderWidth: 1px;
+$infoTransitionDuration: .2s;
+.info {
+  position: absolute;
+  z-index: 10000;
+  top: 20px;
+  right: 20px;
+  width: $infoSymbolSize;
+  height: $infoSymbolSize;
+  border-radius: ($infoSymbolSize + 2 * $infoButtonPaddingSize + 2 * $infoButtonBorderWidth) / 2;
+  padding: $infoButtonPaddingSize;
+  background-color: $colorGreyVeryVeryLight;
+  border: $infoButtonBorderWidth solid $colorGreyLight;
+  cursor: pointer;
+  transition: background-color (2 * $infoTransitionDuration), border (2 * $infoTransitionDuration), $infoTransitionDuration width $infoTransitionDuration, $infoTransitionDuration height $infoTransitionDuration, $infoTransitionDuration border-radius $infoTransitionDuration, box-shadow (2 * $infoTransitionDuration);
+  transition-timing-function: ease-in-out;
+}
+.info.info-show {
+  @extend .qtip-info;
+  width: 360px;
+  height: 80vh;
+  border-radius: 7px;
+  cursor: default;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, .15);
+  transition: background-color (2 * $infoTransitionDuration), border (2 * $infoTransitionDuration), width $infoTransitionDuration, height $infoTransitionDuration, border-radius $infoTransitionDuration, box-shadow (2 * $infoTransitionDuration);
+}
+.info-close {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  top: 0;
+  right: 5px;
+  padding: 4px;
+  color: $textColorLight;
+  cursor: pointer;
+  font-size: $fontSize;
+  transition: opacity $infoTransitionDuration;
+}
+.info-show .info-close {
+  opacity: 1;
+  transition: (2 * $infoTransitionDuration) opacity $infoTransitionDuration;
+}
+.info-symbol {
+  display: block;
+  opacity: 1;
+  height: 0;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: -1px;
+  margin-bottom: 1px;
+  font-size: $infoSymbolSize;
+  text-align: center;
+  color: $textColorSemiLight;
+  transition: (2 * $infoTransitionDuration) opacity $infoTransitionDuration;
+}
+.info-show .info-symbol {
+  opacity: 0;
+  transition: opacity $infoTransitionDuration;
+}
+.info-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  opacity: 0;
+  margin: 6px 10px;
+  font-size: $fontSize;
+  color: $textColor;
+  overflow-y: auto;
+  transition: opacity $infoTransitionDuration;
+  transition-timing-function: ease-in-out;
+}
+.info-show .info-content {
+  opacity: 1;
+  transition: $infoTransitionDuration opacity $infoTransitionDuration;
+}
+.info-content {
+  h3 {
+    font-family: $fontFamily;
+    margin-top: 10px;
+    font-size: 15px;
+    text-align: center;
+  }
+  .info-bottom {
+    margin-top: auto;
+  }
+  dt {
+    font-weight: 700;
+  }
+  dd {
+    margin: 0;
+  }
+  dd ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 0;
+  }
+  dd ul li {
+    margin-bottom: 2px;
+  }
+  .info-small {
+    font-size: $fontSizeSmall;
+  }
+  .data-description {
+  }
+  .data-timestamp {
+    color: $textColorSemiLight;
+  }
+  .data-second,
+  .data-second * a {
+    font-style: italic;
+  }
+  .data-second {
+    display: block;
+    padding-left: 10px;
+  }
+  .data-timestamp {
+    display: block;
+    float: right;
+  }
+}

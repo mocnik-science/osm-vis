@@ -5,14 +5,15 @@
 import Chorale.Common
 import Control.Applicative (empty)
 import Control.Monad
-import Data.Aeson
-import Data.Aeson.Types
+import Data.Aeson hiding (Result)
+import Data.Aeson.Types hiding (Result)
 import qualified Data.ByteString.Lazy.Char8 as C
 import Data.Char (isSpace, toLower)
 import qualified Data.HashMap.Strict as H
 import Data.List
 import Data.Maybe
 import Data.Ord
+import Data.Time
 import qualified Data.Vector as V
 import GHC.Generics
 import Network.Curl
@@ -34,10 +35,25 @@ outputFile = "../../data/osm-tags-history-wiki.json"
 descriptionKeys :: [String]
 descriptionKeys = ["key", "value", "status", "description", "onNode", "onWay", "onArea"]
 
+dataDescription' :: String
+dataDescription' = "Tag history from the OpenStreetMap wiki"
+dataSource' :: String
+dataSource' = "OpenStreetMap project, <a href=\"http://wiki.openstreetmap.org/wiki/Wiki_content_license\" target=\"_blank\">CC BY-SA 2.0</a>"
+
 -- --== MAIN
 
 main :: IO ()
-main = C.writeFile outputFile . encode =<< fmap (filter (not . null . value) . filter (not . null . key) . map fromJust . filter isJust) . mapM (tagUrlToDescriptionHistory 1 detectAllDifferences) =<< listOfTagUrls urlWikiOverview
+main = do
+    descriptionHistory' <- filter (not . null . value) . filter (not . null . key) . catMaybes <$> (mapM (tagUrlToDescriptionHistory 1 detectAllDifferences) =<< listOfTagUrls urlWikiOverview)
+    timestamp' <- formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S%Z" <$> getCurrentTime
+    C.writeFile outputFile . encode $ Result timestamp' dataDescription' dataSource' urlWikiOverview descriptionHistory'
+
+-- --== RESULT
+
+data Result = Result {dataTimestamp :: String, dataDescription :: String, dataSource :: String, dataUrl :: String, descriptionHistory :: [DescriptionHistory Int]} deriving Generic
+
+instance ToJSON Result where
+    toEncoding = genericToEncoding defaultOptions
 
 -- --== COMPARISON OF DESCRIPTION
 
@@ -120,7 +136,7 @@ revisionsToDescriptionHistory defaultValue compareDescriptions rs
     | otherwise = Just . DescriptionHistory (fromJust key') (fromJust value') $ (timestamp rs0, defaultValue) : history' where
         rs' = sortBy (comparing timestamp) rs
         rs0 = head rs'
-        lookupKeyValue k = join . headMay . filter isJust . map (lookup k) . map description $ rs
+        lookupKeyValue k = join . headMay . filter isJust . map (lookup k . description) $ rs
         key' = lookupKeyValue "key"
         value' = lookupKeyValue "value"
         tuples = uncurry zip . map21 (init, tail) . map description $ rs'

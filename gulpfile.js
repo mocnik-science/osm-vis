@@ -22,8 +22,8 @@ const makeCss = g =>
         outputStyle: 'compressed',
     }))
     .pipe(cleanCss())
-const makeJ = g =>
-    .pipe(babel({
+const makeJs = g =>
+    g.pipe(babel({
         presets: ['es2015'],
         compact: true,
         comments: false,
@@ -37,14 +37,16 @@ gulp.task('default', ['clean'], () => merge(
         .pipe(copy(wwwDist)),
     gulp.src(['www/index.html'])
         .pipe(copy(wwwDist, {prefix: 1})),
-    gulp.src(pathsVisualizations, {base: './'})
-        .pipe(filter(['**', '!**/*.css', '!**/*.js']))
+    gulp.src(['www/*/**'])
         .pipe(copy(wwwDist)),
-    makeCss(gulp.src('www/*.css', {base: './'}))
+    gulp.src(pathsVisualizations, {base: './'})
+        .pipe(filter(['**', '!**/*.scss', '!**/*.js']))
+        .pipe(copy(wwwDist)),
+    makeCss(gulp.src('www/*.scss', {base: './'}).pipe(filter(['**', '!**/definitions.scss'])))
         .pipe(gulp.dest(wwwDist)),
     makeJs(gulp.src('www/*.js', {base: './'}))
         .pipe(gulp.dest(wwwDist)),
-    makeCss(gulp.src(pathsVisualizations, {base: './'}).pipe(filter('**/*.css')))
+    makeCss(gulp.src(pathsVisualizations, {base: './'}).pipe(filter('**/*.scss')))
         .pipe(gulp.dest(wwwDist)),
     makeJs(gulp.src(pathsVisualizations, {base: './'}).pipe(filter('**/*.js')))
         .pipe(gulp.dest(wwwDist))

@@ -1,3 +1,13 @@
+const visData = {
+  dataTimestamp: '2016-2017',
+  dataDescription: 'Produced at the <a href="http://www.geog.uni-heidelberg.de/gis/index_en.html" target="_blank">GIScience Research Group</a> at the Heidelberg University',
+  dataSource: '<a href="https://github.com/mocnik-science/osm-vis/blob/master/LICENSE.md" target="_blank">GPL-3</a>',
+  dataUrl: 'http://github.com/mocnik-science',
+}
+const franzBenjaminMocnik = {name: 'Franz-Benjamin Mocnik', url: 'http://www.mocnik-science.net'}
+const alexanderZipf = {name: 'Alexander Zipf', url: 'http://www.geog.uni-heidelberg.de/personen/gis_zipf.html'}
+
+/* SLIDER TIME */
 const sliderTime = settings => {
   settings = Object.assign({}, {
     min: null,
@@ -74,13 +84,8 @@ const sliderTime = settings => {
   $('#timeslider').css('marginLeft', -settings.width/2)
   $('#timeslider .irs').css('width', settings.width)
   if (settings.label) {
-    $('<div>' + settings.label + '</div>').css({
-      position: 'absolute',
+    $('<div class="timesliderLabel">' + settings.label + '</div>').css({
       width: settings.width,
-      textAlign: 'center',
-      fontSize: 11,
-      color: '#999',
-      top: 4,
     }).appendTo('#timeslider')
   }
   var intervalTimer = null
@@ -96,13 +101,8 @@ const sliderTime = settings => {
     else clearInterval(intervalTimer)
   }
   if (!settings.playingHide) {
-    $('<a href="" class="timesliderPlaying"></a>').css({
-      position: 'absolute',
+    $('<div class="timesliderPlaying"></div>').css({
       width: settings.width,
-      textAlign: 'right',
-      fontSize: 11,
-      color: '#7eaacd',
-      top: 4,
     }).appendTo('#timeslider').on('click', event => {
       event.preventDefault()
       settings.playing = !settings.playing
@@ -110,4 +110,105 @@ const sliderTime = settings => {
     })
   }
   initPlaying()
+}
+
+/* INFORMATION */
+const initTooltip = options => {
+  options = Object.assign({}, {
+    selector: null,
+    text: '',
+    positionMy: 'top left',
+    positionAt: 'bottom center',
+    showOnInformation: true,
+  }, options)
+  if (!options.selector) return
+  if (options.showOnInformation) $(options.selector).addClass('showOnInformation')
+  $(options.selector).qtip({
+    content: {
+      text: options.text,
+    },
+    style: {
+      classes: 'qtip-rounded qtip-info qtip-shadow',
+    },
+    position: {
+      my: options.positionMy,
+      at: options.positionAt,
+    },
+    show: {
+      event: null,
+      effect: function(offset) {
+        $(this).fadeIn(300)
+      },
+    },
+    hide: {
+      event: null,
+      effect: function(offset) {
+        $(this).fadeOut(300)
+      },
+    },
+  })
+}
+const initPage = options => {
+  options = Object.assign({}, {
+    infoDescription: '',
+    infoIdea: [],
+    infoProgramming: [],
+    init: () => {},
+    onInfoShow: () => {},
+    onInfoHide: () => {},
+  }, options)
+  if (!Array.isArray(options.infoDescription)) options.infoDescription = [options.infoDescription]
+  $('<a class="back" href="../">back</a>').appendTo('body')
+  var isShowInfo = false
+  const formatTimestamp = t => {
+    const m = moment(t, '%YYYY-%MM-%DDT%HH:%mm:%ss%Z')
+    return (m.isValid()) ? m.format('YYYY-MM-DD') : t
+  }
+  const makeList = (caption, l, f) => (l.length == 0) ? '' : `
+    <dt>${caption}</dt>
+    <dd>
+      <ul>
+        ${l.map(person => `<li>${f(person)}</li>`).join('')}
+      </ul>
+    </dd>
+  `
+  const personList = (caption, l) => makeList(caption, l, person => (person.url) ? `<a href="${person.url}" target="_blank">${person.name}</a>` : person.name)
+  const dataList = (caption, l) => makeList(caption, l, d => `<span class="data-description">${d.dataDescription}</span><br><span class="data-second"><span class="data-timestamp">(${formatTimestamp(d.dataTimestamp)})</span><span class="data-source">${d.dataSource}</span><br><span class="data-url"><a href="${d.dataUrl}" target="_blank">${d.dataUrl}</a></span></span>`)
+  const content = `
+    <h3>Description</h3>
+    ${options.infoDescription.map(p => `<p>${p}</p>`).join('')}
+    <dl class="info-bottom info-small">
+      ${personList('Idea', options.infoIdea)}
+      ${personList('Programming', options.infoProgramming)}
+      ${dataList('Visualization', [visData])}
+      ${dataList('Datasets', options.infoData)}
+    </dl>
+  `
+  const hideInfo = event => {
+    if (event) {
+      event.preventDefault()
+      event.stopPropagation()
+    }
+    isShowInfo = false
+    $('.info').removeClass('info-show')
+    $('.showOnInformation').each((j, n) => $(n).qtip('api').hide())
+    options.onInfoHide()
+    $('.overlay').fadeOut(300, function() {
+      $(this).remove()
+    })
+  }
+  $('<div class="info"><span class="info-close">x</span><span class="info-symbol">?</span><span class="info-content">' + content + '</span></div>')
+    .on('click', function(event) {
+      if (isShowInfo) return
+      event.preventDefault()
+      $('.showOnInformation').each((j, n) => $(n).qtip('api').destroy()).removeClass('showOnInformation')
+      options.init()
+      isShowInfo = !isShowInfo
+      $('<div class="overlay"></div>').on('click', hideInfo).appendTo('body').fadeIn(300)
+      $(this).addClass('info-show')
+      $('.showOnInformation').each((j, n) => $(n).qtip('api').show())
+      options.onInfoShow()
+      $('.qtip-content').on('click', hideInfo)
+    }).appendTo('body')
+    $('.info-close').on('click', hideInfo)
 }

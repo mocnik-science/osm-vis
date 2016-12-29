@@ -1,6 +1,6 @@
-# osm-vis - OpenStreetMap Visualization
+# OSMvis - OpenStreetMap Visualization
 
-This repository contains several visualizations of [OpenStreetMap (OSM)](http://www.openstreetmap.org) data.
+OSMvis is a collection of visualizations related to [OpenStreetMap (OSM)](http://www.openstreetmap.org), in particular the OSM database, the OSM wiki, and the use of OSM data in general. OSMvis aims at exploring the generation, modification, and use of OSM by the methods of information visualization.
 
 ## Installation
 
@@ -16,4 +16,4 @@ This application is written and maintained by Franz-Benjamin Mocnik, <mail@mocni
 
 (c) by Franz-Benjamin Mocnik, 2016.
 
-The code is licensed under the [GPL-3](https://github.com/mocnik-science/osm-vis/blob/master/LICENSE.md).
+The code is licensed under the [GPL-3](http://github.com/mocnik-science/osm-vis/blob/master/LICENSE.md).

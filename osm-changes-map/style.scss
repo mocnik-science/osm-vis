@@ -1,0 +1,39 @@
+@import '../www/definitions.scss';
+
+#svg {
+  margin-top: 16px;
+}
+.country {
+  fill: $colorGreyVeryLight;
+  stroke: #fff;
+  stroke-width: 2px;
+}
+.changes {
+  fill: rgba(0, 0, 0, .25);
+}
+.meanSolarTime {
+  text {
+    font-size: $fontSizeSmall;
+    font-weight: 300;
+  }
+  line {
+    stroke-width: 2px;
+  }
+}
+.meanSolarTime8,
+.meanSolarTime16 {
+  text {
+    fill: $colorPrimaryLightText;
+  }
+  line {
+    stroke: $colorPrimaryLight;
+  }
+}
+.meanSolarTime12 {
+  text {
+    fill: $colorPrimaryDarkText;
+  }
+  line {
+    stroke: $colorPrimaryDark;
+  }
+}

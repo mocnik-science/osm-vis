@@ -33,5 +33,6 @@ executable osm-tags-history-wiki
     curl >= 0.1.4,
     safe >= 0.3.10,
     scalpel >= 0.4,
+    time >= 1.6.0.1,
     unordered-containers >= 0.2.7.1,
     vector >= 0.11
