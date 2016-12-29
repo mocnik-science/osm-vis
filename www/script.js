@@ -23,6 +23,7 @@ const sliderTime = settings => {
     callback: m => {},
     width: 100,
     label: null,
+    labelLeft: null,
     playing: false,
     playingHide: true,
     playingSpeed: 1,
@@ -83,11 +84,8 @@ const sliderTime = settings => {
   slider.reset()
   $('#timeslider').css('marginLeft', -settings.width/2)
   $('#timeslider .irs').css('width', settings.width)
-  if (settings.label) {
-    $('<div class="timesliderLabel">' + settings.label + '</div>').css({
-      width: settings.width,
-    }).appendTo('#timeslider')
-  }
+  if (settings.label) $('<div class="timesliderLabel">' + settings.label + '</div>').appendTo('#timeslider')
+  if (settings.labelLeft) $('<div class="timesliderLabelLeft">' + settings.labelLeft + '</div>').appendTo('#timeslider')
   var intervalTimer = null
   const stopPlaying = () => {
     settings.playing = false
@@ -101,9 +99,7 @@ const sliderTime = settings => {
     else clearInterval(intervalTimer)
   }
   if (!settings.playingHide) {
-    $('<div class="timesliderPlaying"></div>').css({
-      width: settings.width,
-    }).appendTo('#timeslider').on('click', event => {
+    $('<div class="timesliderPlaying"></div>').appendTo('#timeslider').on('click', event => {
       event.preventDefault()
       settings.playing = !settings.playing
       initPlaying()

@@ -115,17 +115,28 @@ body.index {
   position: absolute;
   left: 50%;
   bottom: 10px;
-  .timesliderLabel {
+  .timesliderLabelDefault {
     position: absolute;
     top: 4px;
-    text-align: center;
+  }
+  .timesliderLabelTextDefault {
     font-size: $fontSizeSmall;
     color: $textColorLight;
   }
+  .timesliderLabel {
+    @extend .timesliderLabelDefault;
+    @extend .timesliderLabelTextDefault;
+    text-align: center;
+    width: 100%;
+  }
+  .timesliderLabelLeft {
+    @extend .timesliderLabelDefault;
+    @extend .timesliderLabelTextDefault;
+    left: 6px;
+  }
   .timesliderPlaying {
-    position: absolute;
-    top: 4px;
-    text-align: right;
+    @extend .timesliderLabelDefault;
+    right: 6px;
     font-size: $fontSizeSmall;
     color: $colorPrimaryLightText;
     cursor: pointer;
