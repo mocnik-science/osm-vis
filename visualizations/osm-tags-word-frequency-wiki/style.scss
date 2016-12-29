@@ -1,0 +1,42 @@
+@import '../../www/definitions.scss';
+
+$svgMarginTop: -36px;
+$h1Width: 200px;
+$h1Height: 100px;
+h1 {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 200px;
+  height: 100px;
+  margin-left: -$h1Width / 2;
+  margin-top: -$h1Height / 2 + $svgMarginTop - 12px;
+}
+#svg {
+  margin-top: $svgMarginTop;
+}
+.node {
+  circle {
+    fill: $colorPrimaryDark;
+  }
+  text {
+    font-size: $fontSizeSmall;
+    pointer-events: none;
+  }
+}
+.node-internal {
+  circle {
+    fill: #fff;
+    stroke: $colorPrimaryDark;
+    stroke-width: 1.5px;
+  }
+  text {
+    text-shadow: 0 1px 0 #fff, 0 -1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff;
+  }
+}
+.edge {
+  fill: none;
+  stroke: $colorGreyLight;
+  stroke-opacity: 0.4;
+  stroke-width: 1.5px;
+}
