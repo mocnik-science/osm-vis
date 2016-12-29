@@ -29,12 +29,12 @@ $(document).ready(() => {
     // diagram
     const svg = d3.select('#svg')
       .append('svg')
-      .attr('width', diameter)
-      .attr('height', diameter)
-      .style('margin-left', -diameter / 2)
-      .style('margin-top', -diameter / 2)
+        .attr('width', diameter)
+        .attr('height', diameter)
+        .style('margin-left', -diameter / 2)
+        .style('margin-top', -diameter / 2)
       .append('g')
-      .attr('transform', `translate(${diameter / 2}, ${diameter / 2})`)
+        .attr('transform', `translate(${diameter / 2}, ${diameter / 2})`)
     
     var angle = 0;
     const computeAngle = () => {
@@ -69,13 +69,13 @@ $(document).ready(() => {
       // draw edges
       const edge = svg
         .selectAll('.edge')
-        .data(_(root.descendants()).filter(d => d.data.key !== undefined && d.data.value !== undefined), d => d.data.id)
+          .data(_(root.descendants()).filter(d => d.data.key !== undefined && d.data.value !== undefined), d => d.data.id)
       edge
         .enter()
         .append('path')
-        .style('opacity', 0)
-        .classed('edge', true)
-        .attr('d', d => `M${project(d.x, d.y)}C${project(d.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, d.parent.y)}`)
+          .style('opacity', 0)
+          .classed('edge', true)
+          .attr('d', d => `M${project(d.x, d.y)}C${project(d.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, d.parent.y)}`)
       edge
         .exit()
         .remove()
@@ -107,7 +107,7 @@ $(document).ready(() => {
           .attr('transform', d => 'translate(' + project(d.x, d.y) + ')')
       nodeG
         .append('circle')
-        .attr('r', 2.5)
+          .attr('r', 2.5)
       nodeG
         .append('text')
           .text(d => (d.data.value) ? d.data.value : d.data.key)
@@ -130,8 +130,8 @@ $(document).ready(() => {
           .duration(animationDuration)
             .attr('transform', d => `translate(${project(d.x, d.y)})`)
         svg.selectAll('.node').select('text')
-            .transition()
-            .duration(animationDuration)
+          .transition()
+          .duration(animationDuration)
             .attr('x', d => !d.children ? 6 : -6)
             .style('text-anchor', d => !d.children ? 'start' : 'end')
             .attr('transform', d => `rotate(${d.x - 90})`)
@@ -139,7 +139,7 @@ $(document).ready(() => {
       
       // animate nodes which have a modification in their history
       svg.selectAll('.event')
-        .classed('event', false)
+          .classed('event', false)
         .select('circle')
         .transition()
         .delay(animationEventDelay)

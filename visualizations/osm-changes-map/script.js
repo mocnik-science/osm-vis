@@ -26,7 +26,7 @@ $(document).ready(() => {
         .selectAll('.country')
         .data(dataGeoJson.features)
         .enter()
-          .append('path')
+        .append('path')
           .classed('country', true)
           .attr('d', path)
       
@@ -59,7 +59,7 @@ $(document).ready(() => {
           .data(dataset.nodeChanges.filter(d => d.timestamp == mFormatted), d => (d.lat, d.lon, d.count))
         changes
           .enter()
-            .append('circle')
+          .append('circle')
             .classed('changes', true)
             .attr('data-lon', d => d.lon)
             .attr('transform', d => `translate(${projection([d.lon, d.lat])})`)
