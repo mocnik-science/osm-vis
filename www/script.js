@@ -17,6 +17,7 @@ const libUnderscore = {name: 'Underscore.js', url: 'http://underscorejs.org'}
 const libJQuery = {name: 'jQuery', url: 'http://jquery.com'}
 const libQTip2 = {name: 'qTip2', url: 'http://qtip2.com'}
 const libIonRangeSlider = {name: 'Ion.RangeSlider', url: 'http://ionden.com/a/plugins/ion.rangeSlider/en.html'}
+const libsDefault = [libD3, libMoment, libUnderscore, libJQuery, libQTip2]
 
 /* SLIDER TIME */
 const sliderTime = settings => {
@@ -188,7 +189,7 @@ const initPage = options => {
   }
   const personList = (caption, l, options) => makeList(caption, l, person => (person.url) ? `<a href="${person.url}" target="_blank">${person.name}</a>` : person.name, options)
   const dataList = (caption, l, options) => makeList(caption, l, d => `<span class="data-description">${d.dataDescription}</span><br><span class="data-second"><span class="data-timestamp">(${formatTimestamp(d.dataTimestamp)})</span><span class="data-source">${d.dataSource}</span><br><span class="data-url"><a href="${d.dataUrl}" target="_blank">${d.dataUrl}</a></span></span>`, options)
-  const libraryList = (caption, l, options) => makeList(caption, l, d => `<a href="${d.url}" target="_blank">${d.name}</a>`, options)
+  const libraryList = (caption, l, options) => makeList(caption, _(l).sortBy(d => d.name), d => `<a href="${d.url}" target="_blank">${d.name}</a>`, options)
   const content = `
     <h3>Description</h3>
     ${options.infoDescription.map(p => `<p>${p}</p>`).join('')}

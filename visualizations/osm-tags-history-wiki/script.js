@@ -174,14 +174,9 @@ $(document).ready(() => {
       infoData: [
         dataset,
       ],
-      infoLibraries: [
-        libD3,
-        libMoment,
-        libUnderscore,
-        libJQuery,
-        libQTip2,
+      infoLibraries: libsDefault.concat([
         libIonRangeSlider,
-      ],
+      ]),
       init: () => {
         initTooltip({
           selector: '.node-internal:first',
