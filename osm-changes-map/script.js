@@ -10,9 +10,10 @@ $(document).ready(() => {
     .style('margin-top', -height / 2)
     .append('g')
   
-  d3.json('../data/naturalearth/ne_110m_admin_0_countries.topojson', dataTopoJson => {
+  d3.json('../data/naturalearth/ne_110m_admin_0_countries.topojson', datasetCountries => {
     d3.json('../data/osm-node-changes-per-area.json', dataset => {
       // prepare data
+      const dataTopoJson = datasetCountries.countries
       dataTopoJson.objects.countries.geometries = dataTopoJson.objects.countries.geometries.filter(d => d.properties.iso_a3 != 'ATA')
       const dataGeoJson = topojson.feature(dataTopoJson, dataTopoJson.objects.countries)
       
@@ -95,6 +96,7 @@ $(document).ready(() => {
         infoProgramming: [franzBenjaminMocnik],
         infoData: [
           dataset,
+          datasetCountries,
         ],
         init: () => {
           initTooltip({
