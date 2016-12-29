@@ -4,8 +4,19 @@ const visData = {
   dataSource: '<a href="https://github.com/mocnik-science/osm-vis/blob/master/LICENSE.md" target="_blank">GPL-3</a>',
   dataUrl: 'http://github.com/mocnik-science',
 }
+
 const franzBenjaminMocnik = {name: 'Franz-Benjamin Mocnik', url: 'http://www.mocnik-science.net'}
 const alexanderZipf = {name: 'Alexander Zipf', url: 'http://www.geog.uni-heidelberg.de/personen/gis_zipf.html'}
+
+const libD3 = {name: 'D3.js', url: 'http://d3js.org'}
+const libMoment = {name: 'Moment.js', url: 'http://momentjs.com'}
+const libMomentRound = {name: 'Moment-round', url: 'http://github.com/WebDevTmas/moment-round'}
+const libTopoJSON = {name: 'TopoJSON', url: 'http://github.com/topojson/topojson'}
+const libLeaflet = {name: 'Leaflet', url: 'http://leafletjs.com'}
+const libUnderscore = {name: 'Underscore.js', url: 'http://underscorejs.org'}
+const libJQuery = {name: 'jQuery', url: 'http://jquery.com'}
+const libQTip2 = {name: 'qTip2', url: 'http://qtip2.com'}
+const libIonRangeSlider = {name: 'Ion.RangeSlider', url: 'http://ionden.com/a/plugins/ion.rangeSlider/en.html'}
 
 /* SLIDER TIME */
 const sliderTime = settings => {
@@ -149,6 +160,8 @@ const initPage = options => {
     infoDescription: '',
     infoIdea: [],
     infoProgramming: [],
+    infoData: [],
+    infoLibraries: [],
     init: () => {},
     onInfoShow: () => {},
     onInfoHide: () => {},
@@ -160,16 +173,22 @@ const initPage = options => {
     const m = moment(t, '%YYYY-%MM-%DDT%HH:%mm:%ss%Z')
     return (m.isValid()) ? m.format('YYYY-MM-DD') : t
   }
-  const makeList = (caption, l, f) => (l.length == 0) ? '' : `
-    <dt>${caption}</dt>
-    <dd>
-      <ul>
-        ${l.map(person => `<li>${f(person)}</li>`).join('')}
-      </ul>
-    </dd>
-  `
-  const personList = (caption, l) => makeList(caption, l, person => (person.url) ? `<a href="${person.url}" target="_blank">${person.name}</a>` : person.name)
-  const dataList = (caption, l) => makeList(caption, l, d => `<span class="data-description">${d.dataDescription}</span><br><span class="data-second"><span class="data-timestamp">(${formatTimestamp(d.dataTimestamp)})</span><span class="data-source">${d.dataSource}</span><br><span class="data-url"><a href="${d.dataUrl}" target="_blank">${d.dataUrl}</a></span></span>`)
+  const makeList = (caption, l, f, options={}) => {
+    options = Object.assign({}, {
+      multirow: false,
+    }, options)
+    return (l.length == 0) ? '' : `
+      <dt>${caption}</dt>
+      <dd>
+        <ul class="${(options.multirow) ? 'multirow' : ''}">
+          ${l.map(person => `<li>${f(person)}</li>`).join('')}
+        </ul>
+      </dd>
+    `
+  }
+  const personList = (caption, l, options) => makeList(caption, l, person => (person.url) ? `<a href="${person.url}" target="_blank">${person.name}</a>` : person.name, options)
+  const dataList = (caption, l, options) => makeList(caption, l, d => `<span class="data-description">${d.dataDescription}</span><br><span class="data-second"><span class="data-timestamp">(${formatTimestamp(d.dataTimestamp)})</span><span class="data-source">${d.dataSource}</span><br><span class="data-url"><a href="${d.dataUrl}" target="_blank">${d.dataUrl}</a></span></span>`, options)
+  const libraryList = (caption, l, options) => makeList(caption, l, d => `<a href="${d.url}" target="_blank">${d.name}</a>`, options)
   const content = `
     <h3>Description</h3>
     ${options.infoDescription.map(p => `<p>${p}</p>`).join('')}
@@ -178,6 +197,9 @@ const initPage = options => {
       ${personList('Programming', options.infoProgramming)}
       ${dataList('Visualization', [visData])}
       ${dataList('Datasets', options.infoData)}
+      ${libraryList('Libraries', options.infoLibraries, {
+        multirow: true,
+      })}
     </dl>
   `
   const hideInfo = event => {

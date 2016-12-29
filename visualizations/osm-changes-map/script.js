@@ -99,6 +99,16 @@ $(document).ready(() => {
           dataset,
           datasetCountries,
         ],
+        infoLibraries: [
+          libD3,
+          libMoment,
+          libMomentRound,
+          libTopoJSON,
+          libUnderscore,
+          libJQuery,
+          libQTip2,
+          libIonRangeSlider,
+        ],
         init: () => {
           initTooltip({
             selector: '.meanSolarTime12 text',
