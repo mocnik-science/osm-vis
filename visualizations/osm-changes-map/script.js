@@ -85,6 +85,7 @@ $(document).ready(() => {
         callback: redraw,
         width: width,
         label: 'UTC',
+        labelLeft: moment(dataset.dataTimestamp).format('YYYY-MM-DD'),
         playingHide: false,
         playingSpeed: 2,
       })
