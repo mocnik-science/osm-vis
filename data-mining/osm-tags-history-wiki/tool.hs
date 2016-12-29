@@ -69,7 +69,7 @@ listOfTagUrls :: URL -> IO [URL]
 listOfTagUrls = fmap (nubOrd . filter isTagURL . fromMaybe []) .* flip scrapeURL . attrs "href" $ "a"
 
 isTagURL :: URL -> Bool
-isTagURL = isPrefixOf "/wiki/Tag:"
+isTagURL = isPrefixOf "/wiki/tag:" . map toLower
 
 -- --== EXTRACT DESCRIPTION
 
