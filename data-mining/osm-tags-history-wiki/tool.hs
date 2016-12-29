@@ -27,7 +27,7 @@ urlWikiPrefix = "/wiki/"
 urlWikiOverview :: String
 urlWikiOverview = urlWikiBase ++ urlWikiPrefix ++ "Map_Features"
 urlWikiHistory :: String -> String
-urlWikiHistory url = "https://wiki.openstreetmap.org/w/api.php?action=query&format=json&titles=" ++ url ++ "&prop=revisions&rvprop=timestamp|ids|content&rvlimit=500&continue="
+urlWikiHistory url = urlWikiBase ++ "/w/api.php?action=query&format=json&titles=" ++ url ++ "&prop=revisions&rvprop=timestamp|ids|content&rvlimit=500&continue="
 urlWikiHistorySuffix :: String
 urlWikiHistorySuffix = "&rvstartid="
 outputFile :: String
