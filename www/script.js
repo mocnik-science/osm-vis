@@ -301,3 +301,199 @@ class OptionsPanel {
     options.onStoreUpdate(store)
   }
 }
+
+/* TIMELINE YEARS */
+class TimelineYears {
+  constructor(options) {
+    this.options = options = _.extend({
+      getData: null,
+      scale: 'linear',
+      ignoreUpperValuesInScale: .02,
+      data: null,
+      width: .6 * window.innerWidth,
+      height: .8 * window.innerHeight,
+      marginLeft: 0,
+      marginTop: 0,
+      gapRatio: .2,
+      labelYear: true,
+      labelMonth: true,
+      animationDuration: 300,
+    }, options)
+    // start end and end date
+    const startDate = _(options.data).first().timestamp
+    const endDate = _(options.data).last().timestamp
+    const years = endDate.year() - startDate.year() + 1
+    // temporal constants
+    const daysPerWeek = this.daysPerWeek = 7
+    const monthsPerYear = this.monthsPerYear = 12
+    const maxWeeksPerYear = this.maxWeeksPerYear = 53
+    // try horizontally matching layout
+    const hWeekSize = options.height / (years + (years - 1) * options.gapRatio)
+    // try vertically matching layout
+    const wDaySize = options.width / maxWeeksPerYear
+    const wWeekSize = wDaySize * daysPerWeek
+    // decide the layout
+    const weekSize = Math.min(hWeekSize, wWeekSize)
+    const daySize = this.daySize = weekSize / daysPerWeek
+    const yearGap = weekSize * options.gapRatio
+    // compute svg size
+    const svgWidth = daySize * maxWeeksPerYear
+    const svgHeight = weekSize * (years * (1 + options.gapRatio) - options.gapRatio)
+    // prepare data
+    const startYear = startDate.year()
+    _(options.data).each(d => {
+      d.x = this._weekOfYear(d.timestamp) * daySize
+      d.y = this._dayOfWeek(d.timestamp) * daySize + (d.timestamp.year() - startYear) * (weekSize + yearGap)
+    })
+    const dataDays = d3.timeDays(d3.timeYear(startDate), d3.timeYear.offset(d3.timeYear(endDate)))
+    _(dataDays).each(d => {
+      d.x = this._weekOfYear(d) * daySize
+      d.y = this._dayOfWeek(d) * daySize + (d.getFullYear() - startYear) * (weekSize + yearGap)
+    })
+    // draw
+    const legendWidth = 30
+    const legendHeight = 200
+    const legendSvg = d3.select('body')
+      .append('div')
+        .classed('timelineYears-legend', true)
+        .style('width', legendWidth)
+        .style('height', legendHeight)
+      .append('svg')
+        .style('width', legendWidth)
+        .style('height', legendHeight)
+    legendSvg.append('defs')
+      .append('linearGradient')
+        .attr('id', 'timelineYears-gradient')
+        .attr('x1', 0)
+        .attr('y1', 0)
+        .attr('x2', 0)
+        .attr('y2', 1)
+    legendSvg.append('rect')
+      .classed('timelineYears-gradient', true)
+      .style('width', legendWidth)
+      .style('height', legendHeight)
+      .attr('fill', 'url(#timelineYears-gradient)')
+    legendSvg.append('text')
+      .classed('timelineYears-upper', true)
+      .attr('x', legendWidth + 10)
+      .attr('y', 10)
+    legendSvg.append('text')
+      .classed('timelineYears-lower', true)
+      .attr('x', legendWidth + 10)
+      .attr('y', legendHeight - 2)
+    this.svg = d3.select('body')
+      .append('div')
+        .classed('svg', true)
+      .append('svg')
+        .attr('width', svgWidth)
+        .attr('height', svgHeight)
+        .style('margin-left', (options.marginLeft !== null) ? (options.width - svgWidth) / 2 + options.marginLeft : -svgWidth / 2)
+        .style('margin-top', (options.marginTop !== null) ? (options.height - svgHeight) / 2 + options.marginTop : -svgHeight / 2)
+    this.svg
+      .selectAll('.day')
+      .data(dataDays, d => [d.x, d.y])
+      .enter()
+      .append('rect')
+        .classed('timelineYears-day', true)
+        .attr('x', day => day.x)
+        .attr('y', day => day.y)
+        .attr('width', daySize)
+        .attr('height', daySize)
+        .attr('fill', '#fff')
+    this.year = this.svg
+      .selectAll('.timelineYears-year')
+      .data(d3.timeYears(d3.timeYear.floor(startDate), d3.timeYear.ceil(endDate)))
+      .enter()
+      .append('g')
+        .classed('timelineYears-year', true)
+        .attr('transform', (year, i) => `translate(0, ${i * (weekSize + yearGap)})`)
+    this.year
+      .selectAll('.timelineYears-month')
+      .data(year => d3.timeMonths(year, d3.timeYear.offset(year)))
+      .enter()
+      .append('path')
+        .classed('timelineYears-month', true)
+        .attr('d', day => {
+          const dayEnd = d3.timeDay.offset(d3.timeMonth.offset(day), -1)
+          const d0x = this._weekOfYear(day)
+          const d0y = this._dayOfWeek(day)
+          const d1x = this._weekOfYear(dayEnd, day)
+          const d1y = this._dayOfWeek(dayEnd)
+          return `M${[d0x * daySize, d0y * daySize]} H${(d0x + 1) * daySize} V0 H${(d1x + 1) * daySize} V${(d1y + 1) * daySize} H${d1x * daySize} V${7 * daySize} H${d0x * daySize} Z`
+        })
+    if (options.labelYear) {
+      this.year
+        .append('text')
+          .classed('timelineYears-labelYear', true)
+          .style('text-anchor', 'middle')
+          .attr('transform', d => `translate(${-daySize},${daySize * daysPerWeek / 2})rotate(-90)`)
+          .text(year => moment(year).year())
+    }
+    if (options.labelMonth) {
+      this.svg
+        .select('.timelineYears-year')
+        .selectAll('.labelMonth')
+        .data(year => d3.timeMonths(year, d3.timeYear.offset(year)))
+        .enter()
+          .append('text')
+            .classed('timelineYears-labelMonth', true)
+            .style('text-anchor', 'middle')
+            .attr('x', day => (this._weekOfYear(day) + this._weekOfYear(d3.timeDay.offset(d3.timeMonth.offset(day), -1), day) + 1.8) / 2 * daySize)
+            .attr('y', -.8 * daySize)
+            .text(day => moment(day).format('MMM'))
+    }
+    if (options.getData) this.changeOptions({})
+  }
+  _dayOfWeek(day) {
+    return d3.timeDay.count(d3.timeMonday(day), day)
+  }
+  _weekOfYear(day, dayYear=null) {
+    return d3.timeMonday.count(d3.timeYear((dayYear) ? dayYear : day), day)
+  }
+  _scale() {
+    switch (this.options.scale) {
+      case 'linear':
+        return {
+          f: x => x,
+          min: 0,
+        }
+      case 'logarithmic':
+        return {
+          f: x => (x > 0) ? Math.log(x) : null,
+          min: 1,
+        }
+      case 'sqrt':
+        return {
+          f: Math.sqrt,
+          min: 0,
+        }
+    }
+  }
+  changeOptions(options) {
+    if (_(options).chain().keys().difference(['getData', 'scale', 'ignoreUpperValuesInScale']).value().length > 0) console.error('[TimelineYears] Cannot only change options \'getData\', \'scale\', and \'ignoreUpperValuesInScale\'.')
+    options = this.options = _.extend(this.options, options)
+    _(options.data).each(d => {
+      const dFill = options.getData(d)
+      d.fill = (dFill) ? dFill : null
+    })
+    
+    const maxFillValues = _(options.data).chain().filter(d => d.fill !== null).map(d => d.fill).sortBy(x => x).reverse().value()
+    const maxFill = _(maxFillValues.slice(Math.floor(options.ignoreUpperValuesInScale * maxFillValues.length))).max()
+    const scale = this._scale()
+    _(options.data).each(d => (d.fill !== null) ? d.fill = scale.f(d.fill) / scale.f(maxFill) : null)
+    d3.selectAll('.timelineYears-day')
+      .data(options.data, d => [d.x, d.y])
+      .transition()
+      .attr('fill', d => (d.fill !== null) ? d3.interpolateYlGnBu(d.fill) : '#fff')
+      .duration(options.animationDuration)
+    d3.select('.timelineYears-lower').text(scale.min)
+    d3.select('.timelineYears-upper').text(`${d3.format(',.2r')(maxFill)}+`)
+    d3.select('.timelineYears-legend').select('linearGradient')
+      .selectAll('stop')
+      .data(_(_.range(0, 1, .01)).map(i => [i, d3.interpolateYlGnBu(1 - i)]))
+      .enter()
+      .append('stop')
+        .attr('offset', ([i, c]) => `${i * 100}%`)
+        .attr('stop-color', ([i, c]) => c)
+  }
+}

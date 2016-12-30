@@ -363,3 +363,35 @@ $infoTransitionDuration: .2s;
     padding: 0;
   }
 }
+
+/* TIMELINE YEARS */
+.timelineYears-month {
+  fill: none;
+  stroke: $colorGreyVeryLight;
+  stroke-width: 3px;
+}
+.timelineYears-day {
+  stroke: $colorGreyVeryLight;
+  stroke-width: 1px;
+}
+.timelineYears-labelMonth {
+  font-size: $fontSizeSmall;
+  fill: $textColorVeryLight;
+}
+.timelineYears-labelYear {
+  font-size: $fontSizeSemiSmall;
+  fill: $textColorLight;
+}
+.timelineYears-legend {
+  position: absolute;
+  top: 160px;
+  left: 30px;
+  svg {
+    overflow: visible;
+  }
+  .timelineYears-lower,
+  .timelineYears-upper {
+    font-size: $fontSizeSemiSmall;
+    fill: $textColor;
+  }
+}
