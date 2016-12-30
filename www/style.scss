@@ -332,3 +332,34 @@ $infoTransitionDuration: .2s;
     float: right;
   }
 }
+
+/* OPTIONS PANEL */
+.panel {
+  position: absolute;
+  bottom: 90px;
+  left: 30px;
+  width: 200px;
+  hr {
+    border: 1px solid $colorGreyVeryLight;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  input {
+    position: relative;
+    bottom: 1px;
+    margin-right: 8px;
+    margin-bottom: 5px;
+  }
+  select {
+    width: 100%;
+    margin-bottom: 5px;
+  }
+  checkbox {
+    margin-bottom: 5px;
+  }
+  .gap {
+    height: 5px;
+    margin: 0;
+    padding: 0;
+  }
+}

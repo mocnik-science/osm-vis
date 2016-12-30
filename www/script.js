@@ -247,3 +247,57 @@ const initPage = options => {
     }).appendTo('body')
     $('.info-close').on('click', hideInfo)
 }
+
+/* OPTIONS PANEL */
+class OptionsPanel {
+  constructor(options) {
+    options = _.extend({
+      elements: [],
+      onStoreUpdate: () => {},
+    }, options)
+    const optionsPanel = $('<div class="panel"></div>').appendTo($('body'))
+    
+    var store = {}
+    const updateStore = (keyValues, raiseOnStoreUpdate=true) => {
+      store = _.extend(store, keyValues)
+      if (raiseOnStoreUpdate) options.onStoreUpdate(store)
+    }
+    
+    const addDivider = () => $('<hr>').appendTo(optionsPanel)
+    const addGap = () => $('<div class="gap"></div>').appendTo(optionsPanel)
+    const addRadio = element => _(element.values).each((data, value) => {
+      updateStore({[element.name]: _(element.values).chain().pairs().filter(([k, element]) => _.isObject(element) && element.selected).first().value()[0]}, false)
+      $(`<div><label><input type="radio" name="${element.name}" value="${value}" ${(!_.isString(data) && data.selected) ? 'checked="checked"' : ''}>${_.isString(data) ? data : data.label}</label></div>`)
+        .appendTo(optionsPanel)
+        .find('input')
+        .on('click', function() {
+          updateStore({[element.name]: $(this).val()})
+        })
+    })
+    const addSelect = element => {
+      updateStore({[element.name]: _(element.values).chain().pairs().filter(([k, element]) => _.isObject(element) && element.selected).first().value()[0]}, false)
+      $(`<div><select name="${element.name}">` + _(element.values).map((data, value) => `<option value="${value}" ${(!_.isString(data) && data.selected) ? 'selected="selected"' : ''}>${_.isString(data) ? data : data.label}</option>`) + '</select></div>')
+        .appendTo(optionsPanel)
+        .on('click', function() {
+          updateStore({[element.name]: $(this).find('select').val()})
+        })
+    }
+    const addCheckbox = element => {
+      updateStore({[element.name]: (element.selected !== undefined && element.selected)}, false)
+      $(`<div><label><input type="checkbox" name="${element.name}" ${(element.selected !== undefined && element.selected) ? 'checked="checked"' : ''}>${element.label}</label></div>`)
+        .appendTo(optionsPanel)
+        .on('click', function() {
+          updateStore({[element.name]: $(this).find('input').is(':checked')})
+        })
+    }
+    
+    _(options.elements).each(element => {
+      if (element.type == 'divider') addDivider()
+      if (element.type == 'gap') addGap()
+      if (element.type == 'radio') addRadio(element)
+      if (element.type == 'select') addSelect(element)
+      if (element.type == 'checkbox') addCheckbox(element)
+    })
+    options.onStoreUpdate(store)
+  }
+}
