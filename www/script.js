@@ -20,6 +20,20 @@ const libQTip2 = {name: 'qTip2', url: 'http://qtip2.com'}
 const libIonRangeSlider = {name: 'Ion.RangeSlider', url: 'http://ionden.com/a/plugins/ion.rangeSlider/en.html'}
 const libsDefault = [libD3, libMoment, libUnderscore, libJQuery, libQTip2]
 
+/* DATA */
+const parseCsvInt = v => ((v !== null && v !== undefined && v.length) ? +v : null)
+const derive = attrs => (d, n, a) => {
+  const dAttr = attr => d[`d${attr}`] = (d[attr] != null && a[n - 1][attr] != null) ? d[attr] - a[n - 1][attr] : null
+  if (n > 0 && d.timestamp.diff(a[n - 1].timestamp, 'days') == 1) {
+    if (_(attrs).isArray()) _(attrs).each(attr => dAttr(attr))
+    else dAttr(attrs)
+  } else {
+    if (_(attrs).isArray()) _(attrs).each(attr => d[`d${attr}`] = null)
+    else d[`d${attrs}`] = null
+  }
+  return d
+}
+
 /* SLIDER TIME */
 const sliderTime = options => {
   options = _.extend({
