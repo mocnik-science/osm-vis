@@ -21,8 +21,8 @@ const libIonRangeSlider = {name: 'Ion.RangeSlider', url: 'http://ionden.com/a/pl
 const libsDefault = [libD3, libMoment, libUnderscore, libJQuery, libQTip2]
 
 /* SLIDER TIME */
-const sliderTime = settings => {
-  settings = Object.assign({}, {
+const sliderTime = options => {
+  options = _.extend({
     min: null,
     max: null,
     from: null,
@@ -42,38 +42,38 @@ const sliderTime = settings => {
     playingSpeed: 1,
     playingFrameRate: 30,
     playingRestartOnEnd: true,
-  }, settings)
-  const options = {
-    min: settings.toInternal(settings.min),
-    max: settings.toInternal(settings.max),
-    from: (settings.from) ? settings.toInternal(settings.from) : settings.toInternal(settings.min) / (settings.fromFraction[0] + settings.fromFraction[1]) * settings.fromFraction[0] + settings.toInternal(settings.max) / (settings.fromFraction[0] + settings.fromFraction[1]) * settings.fromFraction[1],
-    from_min: (settings.fromMin) ? settings.toInternal(settings.fromMin) : false,
-    from_max: (settings.fromMax) ? settings.toInternal(settings.fromMax) : false,
+  }, options)
+  const optionsInternal = {
+    min: options.toInternal(options.min),
+    max: options.toInternal(options.max),
+    from: (options.from) ? options.toInternal(options.from) : options.toInternal(options.min) / (options.fromFraction[0] + options.fromFraction[1]) * options.fromFraction[0] + options.toInternal(options.max) / (options.fromFraction[0] + options.fromFraction[1]) * options.fromFraction[1],
+    from_min: (options.fromMin) ? options.toInternal(options.fromMin) : false,
+    from_max: (options.fromMax) ? options.toInternal(options.fromMax) : false,
     grid: true,
     force_edges: true,
     hide_min_max: true,
     hide_from_to: true,
     grid_num: 6,
-    step: settings.step,
-    prettify: n => settings.fromInternal(n).format(settings.formatShow),
+    step: options.step,
+    prettify: n => options.fromInternal(n).format(options.formatShow),
     keyboard: true,
     keyboard_step: 2,
     onChange: n => {
       stopPlaying()
-      settings.callback(settings.fromInternal(n.from))
+      options.callback(options.fromInternal(n.from))
     },
-    onUpdate: n => settings.callback(settings.fromInternal(n.from)),
+    onUpdate: n => options.callback(options.fromInternal(n.from)),
   }
-  $('<input type="text" id="timesliderElement">').appendTo('#timeslider').ionRangeSlider(options)
+  $('<input type="text" id="timesliderElement">').appendTo('#timeslider').ionRangeSlider(optionsInternal)
   const slider = $('#timesliderElement').data('ionRangeSlider')
   const sliderIncrementFrom = dFrom => {
     var isAtMax = false
     slider.result.from += dFrom
-    if (slider.result.from >= ((options.from_max) ? options.from_max : options.max)) {
-      if (settings.playingRestartOnEnd) slider.result.from = (options.from_min) ? options.from_min : options.min
+    if (slider.result.from >= ((optionsInternal.from_max) ? optionsInternal.from_max : optionsInternal.max)) {
+      if (options.playingRestartOnEnd) slider.result.from = (optionsInternal.from_min) ? optionsInternal.from_min : optionsInternal.min
       else {
         isAtMax = true
-        slider.result.from = (options.from_max) ? options.from_max : options.max
+        slider.result.from = (optionsInternal.from_max) ? optionsInternal.from_max : optionsInternal.max
       }
     }
     slider.options.from = slider.result.from
@@ -95,26 +95,26 @@ const sliderTime = settings => {
     return isAtMax
   }
   slider.reset()
-  $('#timeslider').css('marginLeft', -settings.width/2)
-  $('#timeslider .irs').css('width', settings.width)
-  if (settings.label) $('<div class="timesliderLabel">' + settings.label + '</div>').appendTo('#timeslider')
-  if (settings.labelLeft) $('<div class="timesliderLabelLeft">' + settings.labelLeft + '</div>').appendTo('#timeslider')
+  $('#timeslider').css('marginLeft', -options.width/2)
+  $('#timeslider .irs').css('width', options.width)
+  if (options.label) $('<div class="timesliderLabel">' + options.label + '</div>').appendTo('#timeslider')
+  if (options.labelLeft) $('<div class="timesliderLabelLeft">' + options.labelLeft + '</div>').appendTo('#timeslider')
   var intervalTimer = null
   const stopPlaying = () => {
-    settings.playing = false
+    options.playing = false
     initPlaying()
   }
   const initPlaying = () => {
-    $('.timesliderPlaying').text(settings.playing ? 'stop' : 'play')
-    if (settings.playing) intervalTimer = setInterval(() => {
-      if (sliderIncrementFrom(settings.playingSpeed * settings.playingFrameRate)) stopPlaying()
-    }, settings.playingInterval)
+    $('.timesliderPlaying').text(options.playing ? 'stop' : 'play')
+    if (options.playing) intervalTimer = setInterval(() => {
+      if (sliderIncrementFrom(options.playingSpeed * options.playingFrameRate)) stopPlaying()
+    }, options.playingInterval)
     else clearInterval(intervalTimer)
   }
-  if (!settings.playingHide) {
+  if (!options.playingHide) {
     $('<div class="timesliderPlaying"></div>').appendTo('#timeslider').on('click', event => {
       event.preventDefault()
-      settings.playing = !settings.playing
+      options.playing = !options.playing
       initPlaying()
     })
   }
@@ -123,7 +123,7 @@ const sliderTime = settings => {
 
 /* INFORMATION */
 const initTooltip = options => {
-  options = Object.assign({}, {
+  options = _.extend({
     selector: null,
     text: '',
     positionMy: 'top left',
