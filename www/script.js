@@ -10,6 +10,7 @@ const alexanderZipf = {name: 'Alexander Zipf', url: 'http://www.geog.uni-heidelb
 
 const libD3 = {name: 'D3.js', url: 'http://d3js.org'}
 const libD3Cloud = {name: 'D3-cloud', url: 'http://github.com/jasondavies/d3-cloud'}
+const libD3ScaleChromatic = {name: 'D3-scale-chromatic', url: 'http://github.com/d3/d3-scale-chromatic'}
 const libMoment = {name: 'Moment.js', url: 'http://momentjs.com'}
 const libMomentRound = {name: 'Moment-round', url: 'http://github.com/WebDevTmas/moment-round'}
 const libTopoJSON = {name: 'TopoJSON', url: 'http://github.com/topojson/topojson'}
