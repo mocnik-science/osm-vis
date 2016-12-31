@@ -426,7 +426,7 @@ class TimelineYears {
         .append('text')
           .classed('timelineYears-labelYear', true)
           .style('text-anchor', 'middle')
-          .attr('transform', d => `translate(${-daySize},${daySize * daysPerWeek / 2})rotate(-90)`)
+          .attr('transform', d => `translate(${-daySize},${daySize * daysPerWeek / 2}) rotate(-90)`)
           .text(year => moment(year).year())
     }
     if (options.labelMonth) {
