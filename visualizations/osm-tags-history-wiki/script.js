@@ -1,9 +1,13 @@
-const diameter = Math.min(window.innerHeight, window.innerWidth) - 50
+const width = window.innerWidth
+const height = window.innerHeight
 const labelWidth = 120
 const animationDuration = 300
 const animationDelay = 100
 const animationEventDelay = 450
 const animationEventHold = 600
+
+const angle = (x, y) => Math.atan(y / x) + (x < 0 ? Math.PI : 0)
+const length = (x, y) => Math.sqrt(x * x + y * y)
 
 $(document).ready(() => {
   d3.json('../data/osm-tags-history-wiki.json', dataset => {
@@ -27,37 +31,39 @@ $(document).ready(() => {
     }
     
     // diagram
-    const svg = d3.select('.svg')
+    const svgParent = d3.select('.svg')
       .append('svg')
-        .attr('width', diameter)
-        .attr('height', diameter)
-        .style('margin-left', -diameter / 2)
-        .style('margin-top', -diameter / 2)
+        .attr('width', width)
+        .attr('height', height)
+        .style('margin-left', -width / 2)
+        .style('margin-top', -height / 2)
       .append('g')
-        .attr('transform', `translate(${diameter / 2}, ${diameter / 2})`)
+        .attr('transform', `translate(${width / 2}, ${height / 2})`)
+    const svg = svgParent.append('g')
+    svgParent.append('g').classed('svg-hover', true)
     
-    var angle = 0;
+    var svgAngle = 0;
     const computeAngle = () => {
       const box = d3.select('.svg').select('svg').node().getBoundingClientRect()
       const centerX = d3.event.x - box.left - box.width / 2
       const centerY = d3.event.y - box.top - box.height / 2
-      return (Math.atan (centerY / centerX) + (centerX < 0 ? Math.PI : 0)) / (2 * Math.PI) * 180 
+      return angle(centerX, centerY) / (2 * Math.PI) * 180 
     }
     const rotateStart = () => {
-      angle -= computeAngle()
+      svgAngle -= computeAngle()
     }
     const rotate = () => {
       const a = computeAngle()
-      svg.attr('transform', `translate(${diameter / 2}, ${diameter / 2}) rotate(${angle + a})`)
+      svgParent.attr('transform', `translate(${width / 2}, ${height / 2}) rotate(${svgAngle + a})`)
     }
     const rotateEnd = () => {
-      angle = angle + computeAngle()
+      svgAngle += computeAngle()
     }
     d3.select('.svg').call(d3.drag().on('start', rotateStart).on('drag', rotate).on('end', rotateEnd))
     
     const stratify = d3.stratify().id(d => d.id).parentId(d => d.parentId)
     const tree = d3.tree()
-      .size([360, diameter / 2 - labelWidth])
+      .size([360, Math.min(width, height) / 2 - labelWidth])
       .separation((a, b) => (a.parent == b.parent ? 1 : 2) / a.depth)
     const project = (a, radius) => [radius * Math.cos((a - 90) / 180 * Math.PI), radius * Math.sin((a - 90) / 180 * Math.PI)]
     
@@ -66,7 +72,39 @@ $(document).ready(() => {
       const dataTree = prepareDataForTree(_(data).filter(d => _(d.history).some(h => h[0].isSameOrBefore(m)) && _(d.history).every(h => h[0].isAfter(m) || h[1] > 0)))
       const root = tree(stratify(_(dataTree).sortBy(x => x.id)))
       
+      const timeScaling = (d, x) => {
+        return (d.data.history === undefined) ? x : d3.zoomIdentity.scale(d3.scaleLinear().domain([1, 1 + datesMax.diff(datesMin)]).range([.6, 2.6])(1 + m.diff(d.data.history[0][0]))).apply(x)
+      }
+      
+      // hover nodes and edges
+      const hoverNode = (node) => {
+        $(`.edge[data-id="${$(node).data('id')}"]`).clone().appendTo('.svg-hover')
+        const hoveredNode = $(node).clone().appendTo('.svg-hover')
+        const circle = $(hoveredNode).find('circle').attr('r', 5)
+        $(circle).clone().addClass('background').insertBefore($(hoveredNode).find('text'))
+        $(hoveredNode).on('mouseout', () => $('.svg-hover').children().remove())
+      }
+      
       // draw edges
+      const computePath = d => {
+        const [x, y] = timeScaling(d, project(d.x, d.y))
+        const [parentX, parentY] = project(d.parent.x, d.parent.y)
+        const a = (angle(parentX, parentY) + 2 * Math.PI) % (2 * Math.PI)
+        const b = (angle(x - parentX, y - parentY) + 2 * Math.PI) % (2 * Math.PI)
+        const angleDiff = (b - a + 5 * Math.PI) % (2 * Math.PI) - Math.PI
+        const angleDiffSqrt = Math.sign(angleDiff) * Math.sqrt(Math.abs(angleDiff))
+        const distToParent = length(x - parentX, y - parentY)
+        const parentLength = length(parentX, parentY)
+        const k = angleDiffSqrt * distToParent / Math.min(window.width, window.height) * 160 / parentLength
+        const dParentX = parentX - k * parentY
+        const dParentY = parentY + k * parentX
+        return `M${x} ${y} C${x} ${y}, ${dParentX} ${dParentY}, ${parentX} ${parentY}`
+      }
+      const computeOpacity = d => {
+        const [x, y] = timeScaling(d, project(d.x, d.y))
+        const [parentX, parentY] = project(d.parent.x, d.parent.y)
+        return .1 + 1 / length(x - parentX, y - parentY) * Math.min(window.width, window.height)/ 15
+      }
       const edge = svg
         .selectAll('.edge')
           .data(_(root.descendants()).filter(d => d.data.key !== undefined && d.data.value !== undefined), d => d.data.id)
@@ -74,14 +112,15 @@ $(document).ready(() => {
         .enter()
         .append('path')
           .style('opacity', 0)
+          .attr('data-id', d => d.id)
           .classed('edge', true)
-          .attr('d', d => `M${project(d.x, d.y)}C${project(d.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, d.parent.y)}`)
+          .attr('d', computePath)
       edge
         .exit()
         .remove()
       d3.timeout(() => {
         svg.selectAll('.edge')
-          .style('opacity', 1)
+          .style('opacity', computeOpacity)
       }, animationDuration + 2 * animationDelay)
       
       // animate edges
@@ -89,8 +128,9 @@ $(document).ready(() => {
         svg.selectAll('.edge')
           .transition()
           .duration(animationDuration)
-          .attr('d', d => `M${project(d.x, d.y)}C${project(d.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, (d.y + d.parent.y) / 2)} ${project(d.parent.x, d.parent.y)}`)
-      }, animationDelay)
+          .attr('d', computePath, animationDelay)
+          .style('opacity', computeOpacity)
+      })
       
       // draw nodes
       const node = svg
@@ -100,14 +140,12 @@ $(document).ready(() => {
         .enter()
         .append('g')
           .style('opacity', 0)
+          .attr('data-id', d => d.id)
           .classed('node', true)
           .classed('node-internal', d => d.children)
           .classed('node-leaf', d => !d.children)
           .classed('event', d => d.data.value !== undefined && _(d.data.history).some(h => (h[0].isAfter(lastRedraw) && h[0].isSameOrBefore(m)) || h[0].isAfter(m) && h[0].isSameOrBefore(lastRedraw)))
-          .attr('transform', d => 'translate(' + project(d.x, d.y) + ')')
-      nodeG
-        .append('circle')
-          .attr('r', 2.5)
+          .attr('transform', d => 'translate(' + timeScaling(d, project(d.x, d.y)) + ')')
       nodeG
         .append('text')
           .text(d => (d.data.value) ? d.data.value : d.data.key)
@@ -115,6 +153,15 @@ $(document).ready(() => {
           .attr('x', d => !d.children ? 6 : -6)
           .style('text-anchor', d => !d.children ? 'start' : 'end')
           .attr('transform', d => `rotate(${d.x - 90})`)
+          .on('mouseover', function() {
+            hoverNode($(this).parent())
+          })
+      nodeG
+        .append('circle')
+          .attr('r', 2.5)
+          .on('mouseover', function() {
+            hoverNode($(this).parent())
+          })
       node
         .exit()
         .remove()
@@ -128,7 +175,7 @@ $(document).ready(() => {
         svg.selectAll('.node')
           .transition()
           .duration(animationDuration)
-            .attr('transform', d => `translate(${project(d.x, d.y)})`)
+            .attr('transform', d => `translate(${timeScaling(d, project(d.x, d.y))})`)
         svg.selectAll('.node').select('text')
           .transition()
           .duration(animationDuration)
@@ -160,7 +207,7 @@ $(document).ready(() => {
       max: datesMax,
       fromFraction: [2, 1],
       callback: redraw,
-      width: diameter,
+      width: .8 * Math.min(width, height),
       playingHide: false,
       playingSpeed: 1250,
       playingFrameRate: 300,

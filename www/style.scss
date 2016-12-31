@@ -152,10 +152,17 @@ body.scrolling {
 #timeslider {
   position: absolute;
   left: 50%;
-  bottom: 10px;
+  bottom: 6px;
+  padding: 0 12px 6px 12px;
+  background: rgba(255, 255, 255, .96);
+  .irs.js-irs-0 {
+    margin-top: -12px;
+  }
   .timesliderLabelDefault {
     position: absolute;
-    top: 4px;
+    top: -14px;
+    padding: 6px;
+    background: rgba(255, 255, 255, .96);
   }
   .timesliderLabelTextDefault {
     font-size: $fontSizeSmall;
@@ -166,15 +173,16 @@ body.scrolling {
     @extend .timesliderLabelTextDefault;
     text-align: center;
     width: 100%;
+    left: -6px;
   }
   .timesliderLabelLeft {
     @extend .timesliderLabelDefault;
     @extend .timesliderLabelTextDefault;
-    left: 6px;
+    left: 12px;
   }
   .timesliderPlaying {
     @extend .timesliderLabelDefault;
-    right: 6px;
+    right: 12px;
     font-size: $fontSizeSmall;
     color: $colorPrimaryLightText;
     cursor: pointer;

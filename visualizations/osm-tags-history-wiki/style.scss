@@ -18,10 +18,11 @@ h1 {
 .node {
   circle {
     fill: $colorPrimaryDark;
+    pointer-events: all;
   }
   text {
     font-size: $fontSizeSmall;
-    pointer-events: none;
+    pointer-events: all;
   }
 }
 .node-internal {
@@ -36,7 +37,26 @@ h1 {
 }
 .edge {
   fill: none;
-  stroke: $colorGreyLight;
+  stroke: $colorGreySemiLight;
   stroke-opacity: 0.4;
   stroke-width: 1.5px;
+}
+.svg-hover {
+  .node {
+    circle.background,
+    text {
+      stroke: #fff;
+      stroke-width: 6px;
+      stroke-linejoin: round;
+      paint-order: stroke;
+    }
+    text {
+      font-size: $fontSizeLarge;
+      fill: black;
+    }
+  }
+  .edge {
+    stroke: $colorPrimaryDark;
+    stroke-width: 3px;
+  }
 }
