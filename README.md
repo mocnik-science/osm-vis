@@ -2,13 +2,27 @@
 
 OSMvis is a collection of visualizations related to [OpenStreetMap (OSM)](http://www.openstreetmap.org), in particular the OSM database, the OSM wiki, and the use of OSM data in general. OSMvis aims at exploring the generation, modification, and use of OSM by the methods of information visualization.
 
+## Website
+
+A running version of OSMvis can be found on **[http://projects.mocnik-science.net/osm-vis/](http://projects.mocnik-science.net/osm-vis/)**.
+
 ## Installation
 
-```
+The repository contains all source code to generate a directory containing only static files to be uploaded to a web server. Please run the following steps to generate this directory:
+
+1. Install the [Haskell Platform](https://www.haskell.org/platform/)
+2. Install [Node.js](https://nodejs.org)
+3. Install the dependencies using Node.js:
+```shell
 npm install
-bower install
-gulp
 ```
+4. Download and build all datasets needed for the visualizations. Follow the instructions giving in each subdirectory of contained in [`data-mining/`](https://github.com/mocnik-science/osm-vis/tree/master/visualizations)
+5. Generate the directory `www-dist`:
+```shell
+npm run dist
+```
+
+The directory `www-dist` inside your repository should now contain all html, css, and js files, as well as the data, used for the visualizations. Upload them to any server you like. Enjoy exploring OSM visualizations!
 
 ## Author
 

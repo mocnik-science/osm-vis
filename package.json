@@ -21,6 +21,7 @@
     "topojson": "^2.2.0"
   },
   "scripts": {
+    "dist": "npm install && bower install && gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
