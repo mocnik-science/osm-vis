@@ -129,8 +129,6 @@ body.index {
 body.fixed {
   .svg {
     position: absolute;
-    left: 50%;
-    top: 50%;
   }
 }
 body.scrolling {
@@ -151,6 +149,7 @@ body.scrolling {
 /** TIME SLIDER **/
 #timeslider {
   position: absolute;
+  z-index: 1000;
   left: 50%;
   bottom: 6px;
   padding: 0 12px 6px 12px;

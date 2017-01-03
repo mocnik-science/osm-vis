@@ -21,6 +21,19 @@ const libQTip2 = {name: 'qTip2', url: 'http://qtip2.com'}
 const libIonRangeSlider = {name: 'Ion.RangeSlider', url: 'http://ionden.com/a/plugins/ion.rangeSlider/en.html'}
 const libsDefault = [libD3, libMoment, libUnderscore, libJQuery, libQTip2]
 
+/* SVG */
+const pageFixed = (width, height, offsetX, offsetY) => {
+  return d3.select('body')
+    .append('div')
+      .classed('svg', true)
+      .style('top', `${(window.innerHeight - height) / 2 + offsetY}px`)
+      .style('left', `${(window.innerWidth - width) / 2 + offsetX}px`)
+    .append('svg')
+      .attr('width', width)
+      .attr('height', height)
+      .append('g')
+}
+
 /* DATA */
 const parseCsvInt = v => ((v !== null && v !== undefined && v.length) ? +v : null)
 const derive = attrs => (d, n, a) => {
@@ -370,8 +383,8 @@ class TimelineYears {
         .attr('y2', 1)
     legendSvg.append('rect')
       .classed('timelineYears-gradient', true)
-      .style('width', legendWidth)
-      .style('height', legendHeight)
+      .attr('width', legendWidth)
+      .attr('height', legendHeight)
       .attr('fill', 'url(#timelineYears-gradient)')
     legendSvg.append('text')
       .classed('timelineYears-upper', true)
@@ -381,14 +394,7 @@ class TimelineYears {
       .classed('timelineYears-lower', true)
       .attr('x', legendWidth + 10)
       .attr('y', legendHeight - 2)
-    this.svg = d3.select('body')
-      .append('div')
-        .classed('svg', true)
-      .append('svg')
-        .attr('width', svgWidth)
-        .attr('height', svgHeight)
-        .style('margin-left', (options.marginLeft !== null) ? (options.width - svgWidth) / 2 + options.marginLeft : -svgWidth / 2)
-        .style('margin-top', (options.marginTop !== null) ? (options.height - svgHeight) / 2 + options.marginTop : -svgHeight / 2)
+    this.svg = pageFixed(svgWidth, svgHeight, (options.marginLeft !== null) ? options.marginLeft : 0, (options.marginRight !== null) ? options.marginRight : 0)
     this.svg
       .selectAll('.day')
       .data(dataDays, d => [d.x, d.y])

@@ -1,21 +1,16 @@
 const width = .8 * window.innerWidth
-const height = .8 * window.innerHeight
+const height = .96 * window.innerHeight - 160
 
 $(document).ready(() => {
-  const svg = d3.select('.svg')
-    .append('svg')
-    .attr('width', width)
-    .attr('height', height)
-    .style('margin-left', -width / 2)
-    .style('margin-top', -height / 2)
-    .append('g')
-  
   d3.json('../data/naturalearth/ne_110m_admin_0_countries.topojson', datasetCountries => {
     d3.json('../data/osm-node-changes-per-area.json', dataset => {
       // prepare data
       const dataTopoJson = datasetCountries.countries
       dataTopoJson.objects.countries.geometries = dataTopoJson.objects.countries.geometries.filter(d => d.properties.iso_a3 != 'ATA')
       const dataGeoJson = topojson.feature(dataTopoJson, dataTopoJson.objects.countries)
+      
+      // init svg
+      const svg = pageFixed(width, height, 0, 16)
       
       // draw countries
       const projection = d3.geoMercator()

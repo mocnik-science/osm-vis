@@ -30,15 +30,11 @@ $(document).ready(() => {
       return dataTreeTmp.concat([{id: '===root===', parentId: null}])
     }
     
-    // diagram
-    const svgParent = d3.select('.svg')
-      .append('svg')
-        .attr('width', width)
-        .attr('height', height)
-        .style('margin-left', -width / 2)
-        .style('margin-top', -height / 2)
-      .append('g')
+    // init svg
+    const svgParent = pageFixed(width, height, 0, 0)
         .attr('transform', `translate(${width / 2}, ${height / 2})`)
+    
+    // diagram
     const svg = svgParent.append('g')
     svgParent.append('g').classed('svg-hover', true)
     
