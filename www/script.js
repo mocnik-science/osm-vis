@@ -37,8 +37,8 @@ const pageFixed = (width, height, offsetX, offsetY) => {
 /* DATA */
 const parseCsvInt = v => ((v !== null && v !== undefined && v.length) ? +v : null)
 const derive = attrs => (d, n, a) => {
-  const dAttr = attr => d[`d${attr}`] = (d[attr] != null && a[n - 1][attr] != null) ? d[attr] - a[n - 1][attr] : null
-  if (n > 0 && d.timestamp.diff(a[n - 1].timestamp, 'days') == 1) {
+  const dAttr = attr => d[`d${attr}`] = (d[attr] != null && a[n + 1][attr] != null) ? a[n + 1][attr] - d[attr] : null
+  if (n < a.length - 1 && a[n + 1].timestamp.diff(d.timestamp, 'days') == 1) {
     if (_(attrs).isArray()) _(attrs).each(attr => dAttr(attr))
     else dAttr(attrs)
   } else {
