@@ -76,7 +76,7 @@ $(document).ready(() => {
         fromMax: moment('23:50', 'HH:mm'),
         fromFraction: [6, 2],
         step: 600,
-        formatShow: 'HH:mm',
+        show: m => (m.isSame(moment('24:00', 'HH:mm'))) ? m.format('kk:mm') : m.format('HH:mm'),
         callback: redraw,
         width: width,
         label: 'UTC',

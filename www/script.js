@@ -61,6 +61,7 @@ const sliderTime = options => {
     toInternal: m => m.unix(),
     fromInternal: n => moment.unix(n),
     formatShow: 'LL',
+    show: m => m.format(options.formatShow),
     callback: m => {},
     width: 100,
     label: null,
@@ -83,7 +84,7 @@ const sliderTime = options => {
     hide_from_to: true,
     grid_num: 6,
     step: options.step,
-    prettify: n => options.fromInternal(n).format(options.formatShow),
+    prettify: n => options.show(options.fromInternal(n)),
     keyboard: true,
     keyboard_step: 2,
     onChange: n => {

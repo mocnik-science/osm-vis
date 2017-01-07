@@ -28,15 +28,15 @@ $(document).ready(() => {
           type: 'radio',
           name: 'data',
           values: {
-            dnodes: {label: 'new nodes per time', selected: true},
-            dways: 'new ways per time',
-            drelations: 'new relations per time',
-            dusers: 'new users per time',
+            dnodes: {label: 'new nodes per day', selected: true},
+            dways: 'new ways per day',
+            drelations: 'new relations per day',
+            dusers: 'new users per day',
             nodes: 'nodes',
             ways: 'ways',
             relations: 'relations',
-            waysNodes: 'ratio ways to nodes',
-            relationsNodes: 'ratio relations to nodes',
+            nodesWays: 'ratio nodes to ways',
+            nodesRelations: 'ratio nodes to relations',
             waysRelations: 'ratio ways to relations',
             users: 'users',
             nodesUsers: 'nodes per user',
@@ -78,11 +78,11 @@ $(document).ready(() => {
           case 'relations':
             getData = d => d.relations
             break
-          case 'waysNodes':
-            getData = d => (d.nodes > 0) ? d.ways / d.nodes : null
+          case 'nodesWays':
+            getData = d => (d.ways > 0) ? d.nodes / d.ways : null
             break
-          case 'relationsNodes':
-            getData = d => (d.nodes > 0) ? d.relations / d.nodes : null
+          case 'nodesRelations':
+            getData = d => (d.relations > 0) ? d.nodes / d.relations : null
             break
           case 'waysRelations':
             getData = d => (d.relations > 0) ? d.ways / d.relations : null
