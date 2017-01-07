@@ -26,7 +26,7 @@ const makeJs = g =>
         compact: true,
         comments: false,
     }))
-const injectJs = g => (!fs.existsSync('inject.js')) ? g : g.pipe(inject(gulp.src('inject.js'), {starttag: '<!-- inject:inject -->', transform: (filepath, file) => file.contents.toString('utf-8')}))
+const injectJs = g => (!fs.existsSync('inject.html')) ? g : g.pipe(inject(gulp.src('inject.html'), {starttag: '<!-- inject:inject -->', transform: (filepath, file) => file.contents.toString('utf-8')}))
 
 gulp.task('default', ['clean'], () => merge(
     gulp.src([

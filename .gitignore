@@ -6,4 +6,4 @@ dist
 node_modules
 src/components
 www-dist
-inject.js
+inject.html
