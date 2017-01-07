@@ -5,7 +5,9 @@ const cleanCss = require('gulp-clean-css')
 const copy = require('gulp-copy')
 const del = require('del')
 const filter = require('gulp-filter')
+const fs = require('fs')
 const gulp = require('gulp')
+const inject = require('gulp-inject')
 const merge = require('merge-stream')
 const sass = require('gulp-sass')
 
@@ -24,6 +26,7 @@ const makeJs = g =>
         compact: true,
         comments: false,
     }))
+const injectJs = g => (!fs.existsSync('inject.js')) ? g : g.pipe(inject(gulp.src('inject.js'), {starttag: '<!-- inject:inject -->', transform: (filepath, file) => file.contents.toString('utf-8')}))
 
 gulp.task('default', ['clean'], () => merge(
     gulp.src([
@@ -31,13 +34,15 @@ gulp.task('default', ['clean'], () => merge(
             'src/**',
         ])
         .pipe(copy(wwwDist)),
-    gulp.src(['www/index.html'])
-        .pipe(copy(wwwDist, {prefix: 1})),
+    injectJs(gulp.src(['www/index.html']))
+        .pipe(gulp.dest(wwwDist)),
     gulp.src(['www/*/**'])
         .pipe(copy(wwwDist)),
     gulp.src(pathVisualizations, {base: baseVisualizations})
-        .pipe(filter(['**', '!**/*.scss', '!**/*.js']))
+        .pipe(filter(['**', '!**/*.scss', '!**/*.js', '!**/*.html']))
         .pipe(copy(wwwDist, {prefix: 1})),
+    injectJs(gulp.src(pathVisualizations, {base: baseVisualizations}).pipe(filter('**/*.html')))
+        .pipe(gulp.dest(wwwDist)),
     makeCss(gulp.src('www/*.scss', {base: './'}).pipe(filter(['**', '!**/definitions.scss'])))
         .pipe(gulp.dest(wwwDist)),
     makeJs(gulp.src('www/*.js', {base: './'}))
