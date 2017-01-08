@@ -7,7 +7,7 @@ $(document).ready(() => {
     // prepare the data
     const prepareFrequency = dataFrequency => {
       const maxCount = _(dataFrequency).chain().map(d => d[1]).max()
-      return dataFrequency.map(d => ({text: d[0], size: Math.pow(d[1] / maxCount, 2) * largestWordFontSize}))
+      return dataFrequency.map(d => ({text: d[0], size: .8 * Math.pow(d[1] / maxCount, 2) * largestWordFontSize}))
     }
     const wordsPerLanguage = _(dataset.wordFrequency).chain().map(data => [
       [`${data.language}<span class="subcaption">word counts several times per tag description</span>`, prepareFrequency(data.frequency)],
