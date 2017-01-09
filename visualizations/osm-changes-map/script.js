@@ -64,9 +64,9 @@ $(document).ready(() => {
           .remove()
         
         // draw mean solar time
-        svg.selectAll('.meanSolarTime8').attr('transform', d => `translate(${projection([360 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 8), 0])[0]}, 0)`)
-        svg.selectAll('.meanSolarTime12').attr('transform', d => `translate(${projection([360 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 12), 0])[0]}, 0)`)
-        svg.selectAll('.meanSolarTime16').attr('transform', d => `translate(${projection([360 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 16), 0])[0]}, 0)`)
+        svg.selectAll('.meanSolarTime8').attr('transform', d => `translate(${projection([360 * (1 - 1 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 16)), 0])[0]}, 0)`)
+        svg.selectAll('.meanSolarTime12').attr('transform', d => `translate(${projection([360 * (1 - 1 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 12)), 0])[0]}, 0)`)
+        svg.selectAll('.meanSolarTime16').attr('transform', d => `translate(${projection([360 * (1 - 1 / 24 * (m.hour() + m.minute() / 60 + m.second() / 3600 - 8)), 0])[0]}, 0)`)
       }
       
       // slider
