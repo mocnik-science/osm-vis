@@ -24,6 +24,10 @@ npm run dist
 
 The directory `www-dist` inside your repository should now contain all html, css, and js files, as well as the data, used for the visualizations. Upload them to any server you like. Enjoy exploring OSM visualizations!
 
+## Acknowledgements
+
+The author would like to thank the following persons for providing useful comments: Michael Auer, Chiao-Ling Kuo, Lukas Loos, Martin Raifer, Alexander Zipf.
+
 ## Author
 
 This application is written and maintained by Franz-Benjamin Mocnik, <mail@mocnik-science.net>.
