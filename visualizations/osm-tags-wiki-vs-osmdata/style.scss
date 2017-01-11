@@ -20,13 +20,7 @@ div.tooltip p:last-child {
   margin-bottom: 0;
 }
 
-rect {
-  /*fill: transparent;*/
-  shape-rendering: crispEdges;
-}
-
 svg g.background path {
-  /*fill: red;*/
   stroke: blue;
   stroke-width: 2;
   opacity: 0.2;
