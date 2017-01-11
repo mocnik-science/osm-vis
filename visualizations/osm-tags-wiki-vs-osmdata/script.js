@@ -107,6 +107,8 @@ d3.json("../data/osm-tags-wiki-vs-osmdata.json", function(json) {
         .attr("cx", d => x(d['date-wiki']))
         .attr("cy", d => y(d['date-data']))
         .attr("r", d => r(d['count']))
+    svg.selectAll(".background path").transition(t)
+        .attr("d", d3.line().x(d => x(d)).y(d => y(d)))
   }
 
 })
