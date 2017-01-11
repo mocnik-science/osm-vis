@@ -2,7 +2,7 @@ const visData = {
   dataTimestamp: '2016-2017',
   dataDescription: 'Produced at the <a href="http://www.geog.uni-heidelberg.de/gis/index_en.html" target="_blank">GIScience Research Group</a> at the Heidelberg University',
   dataSource: '<a href="https://github.com/mocnik-science/osm-vis/blob/master/LICENSE.md" target="_blank">GPL-3</a>',
-  dataUrl: 'http://github.com/mocnik-science',
+  dataUrl: 'http://github.com/mocnik-science/osm-vis',
 }
 
 const franzBenjaminMocnik = {name: 'Franz-Benjamin Mocnik', url: 'http://www.mocnik-science.net'}
