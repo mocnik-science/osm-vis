@@ -13,7 +13,7 @@ npm install
 
 To fetch and process the data, first run the data mining of "osm-tags-history-wiki", then execute:
 ```
-npm run
+npm start
 ```
 
 ## Author
