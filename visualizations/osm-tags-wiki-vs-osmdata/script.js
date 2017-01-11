@@ -1,4 +1,5 @@
-d3.csv("data.csv", function(data) {
+d3.json("../data/osm-tags-wiki-vs-osmdata.json", function(json) {
+  const data = json.data
   data.forEach(function(d) {
     d['date-wiki'] = new Date(d['date-wiki'])
     d['date-data'] = new Date(d['date-data'])

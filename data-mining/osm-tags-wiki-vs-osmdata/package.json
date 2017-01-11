@@ -1,0 +1,16 @@
+{
+  "name": "osm-tags-wiki-vs-osmdata-miner",
+  "version": "1.0.0",
+  "description": "The tool extracts first occurences of currently [documented](https://wiki.openstreetmap.org/wiki/Map_Features) OSM tags (using [taghistory's API](https://github.com/tyrasd/taghistory#api)) and merges that with the creation dates of the corresponding pages on the OSM wiki.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "Martin Raifer <martin@raifer.tech>",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "d3-queue": "^3.0.3",
+    "node-fetch": "^1.6.3"
+  }
+}
