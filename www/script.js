@@ -7,6 +7,7 @@ const visData = {
 
 const franzBenjaminMocnik = {name: 'Franz-Benjamin Mocnik', url: 'http://www.mocnik-science.net'}
 const alexanderZipf = {name: 'Alexander Zipf', url: 'http://www.geog.uni-heidelberg.de/personen/gis_zipf.html'}
+const martinRaifer = {name: 'Martin Raifer', url: 'mailto:martin@raifer.tech'}
 
 const libD3 = {name: 'D3.js', url: 'http://d3js.org'}
 const libD3Cloud = {name: 'D3-cloud', url: 'http://github.com/jasondavies/d3-cloud'}
@@ -270,13 +271,13 @@ class OptionsPanel {
       onStoreUpdate: () => {},
     }, options)
     const optionsPanel = $('<div class="panel"></div>').appendTo($('body'))
-    
+
     var store = {}
     const updateStore = (keyValues, raiseOnStoreUpdate=true) => {
       store = _.extend(store, keyValues)
       if (raiseOnStoreUpdate) options.onStoreUpdate(store)
     }
-    
+
     const addDivider = () => $('<hr>').appendTo(optionsPanel)
     const addGap = () => $('<div class="gap"></div>').appendTo(optionsPanel)
     const addRadio = element => _(element.values).each((data, value) => {
@@ -304,7 +305,7 @@ class OptionsPanel {
           updateStore({[element.name]: $(this).find('input').is(':checked')})
         })
     }
-    
+
     _(options.elements).each(element => {
       if (element.type == 'divider') addDivider()
       if (element.type == 'gap') addGap()
@@ -483,7 +484,7 @@ class TimelineYears {
       const dFill = options.getData(d)
       d.fill = (dFill) ? dFill : null
     })
-    
+
     const maxFillValues = _(options.data).chain().filter(d => d.fill !== null).map(d => d.fill).sortBy(x => x).reverse().value()
     const maxFill = _(maxFillValues.slice(Math.floor(options.ignoreUpperValuesInScale * maxFillValues.length))).max()
     const scale = this._scale()
