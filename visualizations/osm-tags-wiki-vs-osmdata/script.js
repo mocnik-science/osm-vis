@@ -1,5 +1,5 @@
-d3.json('../data/osm-tags-wiki-vs-osmdata.json', function(json) {
-  const data = json.data
+d3.json('../data/osm-tags-wiki-vs-osmdata.json', function(dataset) {
+  const data = dataset.data
   data.forEach(function(d) {
     d['date-wiki'] = new Date(d['date-wiki'])
     d['date-data'] = new Date(d['date-data'])
@@ -8,7 +8,6 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', function(json) {
 
   const formatDate = d3.timeFormat('%Y-%m-%d')
 
-  // init svg
   const width = window.innerWidth-10
   const height = window.innerHeight-10
   const svg = pageFixed(width, height, 0, 0)
@@ -32,7 +31,6 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', function(json) {
   const tooltip = d3.select('body').append('div')
       .attr('class', 'tooltip')
       .style('opacity', 0)
-
 
   svg.append('g')
       .attr('class', 'background')
@@ -110,5 +108,15 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', function(json) {
     svg.selectAll('.background path').transition(t)
         .attr('d', d3.line().x(d => x(d)).y(d => y(d)))
   }
+
+  // page
+  initPage({
+    infoDescription: 'This compares the dates where some popular OSM tags were first documented on the OSM wiki versus when they were actually first used in the OSM Database.',
+    infoIdea: [martinRaifer],
+    infoProgramming: [martinRaifer],
+    infoData: [dataset],
+    infoLibraries: libsDefault,
+    init: () => {},
+  })
 
 })
