@@ -12,21 +12,21 @@ const length = (x, y) => Math.sqrt(x * x + y * y)
 $(document).ready(() => {
   d3.json('../data/osm-tags-history-wiki.json', dataset => {
     // prepare the data
-    const data = _(dataset.descriptionHistory).map(d => {
-      d.history = _(d.history).map(h => [moment(h[0]), h[1]])
+    const data = R.map(d => {
+      d.history = R.map(h => [moment(h[0]), h[1]], d.history)
       return d
-    })
-    const dates = _(data).chain().map(d => _(d.history).map(ts => ts[0])).flatten().value()
+    }, dataset.descriptionHistory)
+    const dates = R.compose(R.flatten, R.map(d => R.map(ts => ts[0], d.history)))(data)
     const datesMin = moment.min(dates)
     const datesMax = moment.max(dates)
     const prepareDataForTree = dat => {
-      var dataTreeTmp = _(dat).map(d => {
+      var dataTreeTmp = R.compose(R.map(d => {
         d.id = d.key + '======' + d.value
         d.parentId = d.key
         return d
-      })
-      const keys = _(dat).chain().map(x => x.key).uniq().value()
-      dataTreeTmp = dataTreeTmp.concat(_(keys).map(k => ({id: k, parentId: '===root===', key: k})))
+      }), R.filter(R.complement(R.propEq('value', '*'))))(dat)
+      const keys = R.compose(R.uniq(), R.map(R.prop('key')))(dat)
+      dataTreeTmp = dataTreeTmp.concat(R.map(k => ({id: k, parentId: '===root===', key: k}), keys))
       return dataTreeTmp.concat([{id: '===root===', parentId: null}])
     }
     
@@ -65,8 +65,8 @@ $(document).ready(() => {
     
     var lastRedraw = null
     const redraw = m => {
-      const dataTree = prepareDataForTree(_(data).filter(d => _(d.history).some(h => h[0].isSameOrBefore(m)) && _(d.history).every(h => h[0].isAfter(m) || h[1] > 0)))
-      const root = tree(stratify(_(dataTree).sortBy(x => x.id)))
+      const dataTree = prepareDataForTree(R.filter(d => R.any(h => h[0].isSameOrBefore(m), d.history) && R.all(h => h[0].isAfter(m) || h[1] > 0, d.history), data))
+      const root = tree(stratify(R.sortBy(R.prop('id'), dataTree)))
       
       const timeScaling = (d, x) => {
         return (d.data.history === undefined) ? x : d3.zoomIdentity.scale(d3.scaleLinear().domain([1, 1 + datesMax.diff(datesMin)]).range([.6, 2.6])(1 + m.diff(d.data.history[0][0]))).apply(x)
@@ -103,7 +103,7 @@ $(document).ready(() => {
       }
       const edge = svg
         .selectAll('.edge')
-          .data(_(root.descendants()).filter(d => d.data.key !== undefined && d.data.value !== undefined), d => d.data.id)
+        .data(R.filter(d => d.data.key !== undefined && d.data.value !== undefined, root.descendants()), d => d.data.id)
       edge
         .enter()
         .append('path')
@@ -131,7 +131,7 @@ $(document).ready(() => {
       // draw nodes
       const node = svg
         .selectAll('.node')
-        .data(_(root.descendants()).filter(d => d.data.key !== undefined), d => d.data.id)
+        .data(R.filter(d => d.data.key !== undefined, root.descendants()), d => d.data.id)
       const nodeG = node
         .enter()
         .append('g')
@@ -140,7 +140,7 @@ $(document).ready(() => {
           .classed('node', true)
           .classed('node-internal', d => d.children)
           .classed('node-leaf', d => !d.children)
-          .classed('event', d => d.data.value !== undefined && _(d.data.history).some(h => (h[0].isAfter(lastRedraw) && h[0].isSameOrBefore(m)) || h[0].isAfter(m) && h[0].isSameOrBefore(lastRedraw)))
+          .classed('event', d => d.data.value !== undefined && R.any(h => (h[0].isAfter(lastRedraw) && h[0].isSameOrBefore(m)) || h[0].isAfter(m) && h[0].isSameOrBefore(lastRedraw), d.data.history))
           .attr('transform', d => 'translate(' + timeScaling(d, project(d.x, d.y)) + ')')
       nodeG
         .append('text')

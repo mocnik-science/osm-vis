@@ -16,11 +16,14 @@ const libMoment = {name: 'Moment.js', url: 'http://momentjs.com'}
 const libMomentRound = {name: 'Moment-round', url: 'http://github.com/WebDevTmas/moment-round'}
 const libTopoJSON = {name: 'TopoJSON', url: 'http://github.com/topojson/topojson'}
 const libLeaflet = {name: 'Leaflet', url: 'http://leafletjs.com'}
-const libUnderscore = {name: 'Underscore.js', url: 'http://underscorejs.org'}
+const libRamda = {name: 'Ramda', url: 'http://ramdajs.com'}
 const libJQuery = {name: 'jQuery', url: 'http://jquery.com'}
 const libQTip2 = {name: 'qTip2', url: 'http://qtip2.com'}
 const libIonRangeSlider = {name: 'Ion.RangeSlider', url: 'http://ionden.com/a/plugins/ion.rangeSlider/en.html'}
-const libsDefault = [libD3, libMoment, libUnderscore, libJQuery, libQTip2]
+const libsDefault = [libD3, libMoment, libRamda, libJQuery, libQTip2]
+
+/* HELPING FUNCTIONS */
+const range = (start, stop, step) => R.map(n => start + n * step, R.range(0, Math.ceil((stop - start) / step)))
 
 /* SVG */
 const pageFixed = (width, height, offsetX, offsetY) => {
@@ -38,12 +41,13 @@ const pageFixed = (width, height, offsetX, offsetY) => {
 /* DATA */
 const parseCsvInt = v => ((v !== null && v !== undefined && v.length) ? +v : null)
 const derive = attrs => (d, n, a) => {
-  const dAttr = attr => d[`d${attr}`] = (d[attr] != null && a[n + 1][attr] != null) ? a[n + 1][attr] - d[attr] : null
+  n = parseInt(n)
+  const dAttr = attr => d[`d${attr}`] = (d[attr] !== null && a[n + 1][attr] !== null) ? a[n + 1][attr] - d[attr] : null
   if (n < a.length - 1 && a[n + 1].timestamp.diff(d.timestamp, 'days') == 1) {
-    if (_(attrs).isArray()) _(attrs).each(attr => dAttr(attr))
+    if (R.is(Array, attrs)) R.forEach(dAttr, attrs)
     else dAttr(attrs)
   } else {
-    if (_(attrs).isArray()) _(attrs).each(attr => d[`d${attr}`] = null)
+    if (R.is(Array, attrs)) R.forEach(attr => d[`d${attr}`] = null, attrs)
     else d[`d${attrs}`] = null
   }
   return d
@@ -51,7 +55,7 @@ const derive = attrs => (d, n, a) => {
 
 /* SLIDER TIME */
 const sliderTime = options => {
-  options = _.extend({
+  options = R.merge({
     min: null,
     max: null,
     from: null,
@@ -153,7 +157,7 @@ const sliderTime = options => {
 
 /* INFORMATION */
 const initTooltip = options => {
-  options = _.extend({
+  options = R.merge({
     selector: null,
     text: '',
     positionMy: 'top left',
@@ -220,7 +224,7 @@ const initPage = options => {
   }
   const personList = (caption, l, options) => makeList(caption, l, person => (person.url) ? `<a href="${person.url}" target="_blank">${person.name}</a>` : person.name, options)
   const dataList = (caption, l, options) => makeList(caption, l, d => `<span class="data-description">${d.dataDescription}</span><br><span class="data-second"><span class="data-timestamp">(${formatTimestamp(d.dataTimestamp)})</span><span class="data-source">${d.dataSource}</span><br><span class="data-url"><a href="${d.dataUrl}" target="_blank">${d.dataUrl}</a></span></span>`, options)
-  const libraryList = (caption, l, options) => makeList(caption, _(l).sortBy(d => d.name), d => `<a href="${d.url}" target="_blank">${d.name}</a>`, options)
+  const libraryList = (caption, l, options) => makeList(caption, R.sortBy(R.prop('name'), l), d => `<a href="${d.url}" target="_blank">${d.name}</a>`, options)
   const content = `
     <h3>Description</h3>
     ${options.infoDescription.map(p => `<p>${p}</p>`).join('')}
@@ -266,7 +270,7 @@ const initPage = options => {
 /* OPTIONS PANEL */
 class OptionsPanel {
   constructor(options) {
-    options = _.extend({
+    options = R.merge({
       elements: [],
       onStoreUpdate: () => {},
     }, options)
@@ -274,24 +278,24 @@ class OptionsPanel {
     
     var store = {}
     const updateStore = (keyValues, raiseOnStoreUpdate=true) => {
-      store = _.extend(store, keyValues)
+      store = R.merge(store, keyValues)
       if (raiseOnStoreUpdate) options.onStoreUpdate(store)
     }
     
     const addDivider = () => $('<hr>').appendTo(optionsPanel)
     const addGap = () => $('<div class="gap"></div>').appendTo(optionsPanel)
-    const addRadio = element => _(element.values).each((data, value) => {
-      updateStore({[element.name]: _(element.values).chain().pairs().filter(([k, element]) => _.isObject(element) && element.selected).first().value()[0]}, false)
-      $(`<div><label><input type="radio" name="${element.name}" value="${value}" ${(!_.isString(data) && data.selected) ? 'checked="checked"' : ''}>${_.isString(data) ? data : data.label}</label></div>`)
+    const addRadio = element => R.forEachObjIndexed((data, value) => {
+      updateStore({[element.name]: R.compose(R.head, R.head, R.filter(([k, element]) => R.is(Object, element) && element.selected), R.toPairs)(element.values)}, false)
+      $(`<div><label><input type="radio" name="${element.name}" value="${value}" ${(!R.is(String, data) && data.selected) ? 'checked="checked"' : ''}>${R.is(String, data) ? data : data.label}</label></div>`)
         .appendTo(optionsPanel)
         .find('input')
         .on('click', function() {
           updateStore({[element.name]: $(this).val()})
         })
-    })
+    }, element.values)
     const addSelect = element => {
-      updateStore({[element.name]: _(element.values).chain().pairs().filter(([k, element]) => _.isObject(element) && element.selected).first().value()[0]}, false)
-      $(`<div><select name="${element.name}">` + _(element.values).map((data, value) => `<option value="${value}" ${(!_.isString(data) && data.selected) ? 'selected="selected"' : ''}>${_.isString(data) ? data : data.label}</option>`) + '</select></div>')
+      updateStore({[element.name]: R.compose(R.head, R.head, R.filter(([k, element]) => R.is(Object, element) && element.selected), R.toPairs)(element.values)}, false)
+      $(`<div><select name="${element.name}">` + R.compose(R.join(''), R.values, R.mapObjIndexed((data, value) => `<option value="${value}" ${(R.prop('selected', data)) ? 'selected="selected"' : ''}>${R.is(String, data) ? data : data.label}</option>`))(element.values) + '</select></div>')
         .appendTo(optionsPanel)
         .on('click', function() {
           updateStore({[element.name]: $(this).find('select').val()})
@@ -306,13 +310,13 @@ class OptionsPanel {
         })
     }
     
-    _(options.elements).each(element => {
+    R.forEach(element => {
       if (element.type == 'divider') addDivider()
       if (element.type == 'gap') addGap()
       if (element.type == 'radio') addRadio(element)
       if (element.type == 'select') addSelect(element)
       if (element.type == 'checkbox') addCheckbox(element)
-    })
+    }, options.elements)
     options.onStoreUpdate(store)
   }
 }
@@ -320,7 +324,7 @@ class OptionsPanel {
 /* TIMELINE YEARS */
 class TimelineYears {
   constructor(options) {
-    this.options = options = _.extend({
+    this.options = options = R.merge({
       getData: null,
       scale: 'linear',
       ignoreUpperValuesInScale: .02,
@@ -335,8 +339,8 @@ class TimelineYears {
       animationDuration: 300,
     }, options)
     // start end and end date
-    const startDate = _(options.data).first().timestamp
-    const endDate = _(options.data).last().timestamp
+    const startDate = R.head(options.data).timestamp
+    const endDate = R.last(options.data).timestamp
     const years = endDate.year() - startDate.year() + 1
     // temporal constants
     const daysPerWeek = this.daysPerWeek = 7
@@ -356,15 +360,15 @@ class TimelineYears {
     const svgHeight = weekSize * (years * (1 + options.gapRatio) - options.gapRatio)
     // prepare data
     const startYear = startDate.year()
-    _(options.data).each(d => {
+    R.forEach(d => {
       d.x = this._weekOfYear(d.timestamp) * daySize
       d.y = this._dayOfWeek(d.timestamp) * daySize + (d.timestamp.year() - startYear) * (weekSize + yearGap)
-    })
+    }, options.data)
     const dataDays = d3.timeDays(d3.timeYear(startDate), d3.timeYear.offset(d3.timeYear(endDate)))
-    _(dataDays).each(d => {
+    R.forEach(d => {
       d.x = this._weekOfYear(d) * daySize
       d.y = this._dayOfWeek(d) * daySize + (d.getFullYear() - startYear) * (weekSize + yearGap)
-    })
+    }, dataDays)
     // draw
     const legendWidth = 30
     const legendHeight = 200
@@ -478,17 +482,21 @@ class TimelineYears {
     }
   }
   changeOptions(options) {
-    if (_(options).chain().keys().difference(['getData', 'scale', 'ignoreUpperValuesInScale']).value().length > 0) console.error('[TimelineYears] Cannot only change options \'getData\', \'scale\', and \'ignoreUpperValuesInScale\'.')
-    options = this.options = _.extend(this.options, options)
-    _(options.data).each(d => {
+    if (R.compose(R.length, R.difference(['getData', 'scale', 'ignoreUpperValuesInScale']), R.keys)(options) > 0) console.error('[TimelineYears] Cannot only change options \'getData\', \'scale\', and \'ignoreUpperValuesInScale\'.')
+    options = this.options = R.merge(this.options, options)
+    options.data = R.map(d => {
       const dFill = options.getData(d)
       d.fill = (dFill) ? dFill : null
-    })
+      return d
+    }, options.data)
     
-    const maxFillValues = _(options.data).chain().filter(d => d.fill !== null).map(d => d.fill).sortBy(x => x).reverse().value()
-    const maxFill = _(maxFillValues.slice(Math.floor(options.ignoreUpperValuesInScale * maxFillValues.length))).max()
+    const maxFillValues = R.compose(R.reverse, R.sortBy(R.identity), R.filter(R.complement(R.isNil)), R.pluck('fill'))(options.data)
+    const maxFill = R.compose(R.apply(Math.max), R.slice(Math.floor(options.ignoreUpperValuesInScale * maxFillValues.length), Infinity))(maxFillValues)
     const scale = this._scale()
-    _(options.data).each(d => (d.fill !== null) ? d.fill = scale.f(d.fill) / scale.f(maxFill) : null)
+    options.data = R.map(d => {
+      (d.fill !== null) ? d.fill = scale.f(d.fill) / scale.f(maxFill) : null
+      return d
+    }, options.data)
     d3.selectAll('.timelineYears-day')
       .data(options.data, d => [d.x, d.y])
       .transition()
@@ -498,7 +506,7 @@ class TimelineYears {
     d3.select('.timelineYears-upper').text(`${d3.format(',.2r')(maxFill)}+`)
     d3.select('.timelineYears-legend').select('linearGradient')
       .selectAll('stop')
-      .data(_(_.range(0, 1, .01)).map(i => [i, d3.interpolateYlGnBu(1 - i)]))
+      .data(R.map(i => [i, d3.interpolateYlGnBu(1 - i)], range(0, 1, .01)))
       .enter()
       .append('stop')
         .attr('offset', ([i, c]) => `${i * 100}%`)

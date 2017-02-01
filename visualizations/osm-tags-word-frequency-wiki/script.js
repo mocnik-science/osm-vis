@@ -6,17 +6,17 @@ $(document).ready(() => {
   d3.json('../data/osm-tags-word-frequency-wiki.json', dataset => {
     // prepare the data
     const prepareFrequency = dataFrequency => {
-      const maxCount = _(dataFrequency).chain().map(d => d[1]).max()
+      const maxCount = R.compose(R.apply(Math.max), R.map(d => d[1]))(dataFrequency)
       return dataFrequency.map(d => ({text: d[0], size: .8 * Math.pow(d[1] / maxCount, 2) * largestWordFontSize}))
     }
-    const wordsPerLanguage = _(dataset.wordFrequency).chain().map(data => [
+    const wordsPerLanguage = R.compose(R.fromPairs, R.unnest, R.map(data => [
       [`${data.language}<span class="subcaption">word counts several times per tag description</span>`, prepareFrequency(data.frequency)],
       [`${data.language}<span class="subcaption">word counts only once per tag description</span>`, prepareFrequency(data.frequencyOnlyOncePerTag)],
-    ]).flatten(true).object().value()
+    ]))(dataset.wordFrequency)
     
     // draw word cloud
     const fill = d3.scaleOrdinal(d3.schemeCategory20)
-    _(wordsPerLanguage).each((words, lang) => {
+    R.forEachObjIndexed((words, lang) => {
       const div = $(`<div class="svg"><h3>${lang}</h3></div>`).appendTo($('body')).css({
         width: width,
         height: height,
@@ -47,7 +47,7 @@ $(document).ready(() => {
         .fontSize(d => d.size)
         .on('end', draw)
         .start()
-    })
+    }, wordsPerLanguage)
     
     // page
     initPage({

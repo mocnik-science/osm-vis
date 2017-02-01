@@ -107,7 +107,7 @@ $(document).ready(() => {
             positionAt: 'top center',
           })
           initTooltip({
-            selector: `.changes[data-lon="${_($('.changes')).chain().map(n => $(n).data('lon')).min().value()}"]:first`,
+            selector: `.changes[data-lon="${R.compose(R.apply(Math.min), R.mapObjIndexed(n => $(n).data('lon')))($('.changes'))}"]:first`,
             text: 'The change of nodes in the OSM database is depicted by a disk. The area of the disk is logarithmic in the number of edited nodes. The larger the disk, the more nodes are changed.',
           })
           initTooltip({

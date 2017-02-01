@@ -1,17 +1,17 @@
 $(document).ready(() => {
   d3.json('../data/osmstats/osmstats.json', datasetJson => {
     // prepare the data
-    const dataset = _(d3.csvParse(datasetJson.data, d => ({
+    const dataset = R.compose(
+        R.values,
+        R.mapObjIndexed(derive(['nodes', 'relations', 'drelations', 'ways', 'users'])),
+        R.filter(d => d.timestamp && d.timestamp.isValid())
+      )(d3.csvParse(datasetJson.data, d => ({
       timestamp: moment(d['Day of Month'], 'DD/MM/YYYY'),
       nodes: parseCsvInt(d['Nodes (Accum.)']),
       relations: parseCsvInt(d['Number of relations (Accum.)']),
       ways: parseCsvInt(d['Ways (Accum.)']),
       users: parseCsvInt(d['Users']),
     })))
-      .chain()
-      .filter(d => d.timestamp && d.timestamp.isValid())
-      .map(derive(['nodes', 'relations', 'drelations', 'ways', 'users']))
-      .value()
     
     // timeline
     const timeline = new TimelineYears({
