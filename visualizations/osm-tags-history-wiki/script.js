@@ -32,7 +32,7 @@ $(document).ready(() => {
     
     // init svg
     const svgParent = pageFixed(width, height, 0, 0)
-        .attr('transform', `translate(${width / 2}, ${height / 2})`)
+      .attr('transform', `translate(${width / 2}, ${height / 2})`)
     
     // diagram
     const svg = svgParent.append('g')
