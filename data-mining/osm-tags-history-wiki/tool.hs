@@ -44,7 +44,7 @@ dataSource' = "OpenStreetMap project, <a href=\"http://wiki.openstreetmap.org/wi
 
 main :: IO ()
 main = do
-    descriptionHistory' <- filter (not . null . value) . filter (not . null . key) . catMaybes <$> (mapM (tagUrlToDescriptionHistory 1 detectAllDifferences) =<< listOfTagUrls urlWikiOverview)
+    descriptionHistory' <- filter (not . null . value) . filter (not . null . key) . catMaybes <$> (mapM (urlToDescriptionHistory 1 detectAllDifferences) =<< listOfTagUrls urlWikiOverview)
     timestamp' <- formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S%Z" <$> getCurrentTime
     C.writeFile outputFile . encode $ Result timestamp' dataDescription' dataSource' urlWikiOverview descriptionHistory'
 
@@ -66,7 +66,10 @@ detectAllDifferences dOld dNew
 -- --== EXTRACT TAGS
 
 listOfTagUrls :: URL -> IO [URL]
-listOfTagUrls = fmap (nubOrd . filter isTagURL . fromMaybe []) .* flip scrapeURL . attrs "href" $ "a"
+listOfTagUrls = fmap (nubOrd . filter (uncurry (||) . map21 (isKeyURL, isTagURL)) . fromMaybe []) .* flip scrapeURL . attrs "href" $ "a"
+
+isKeyURL :: URL -> Bool
+isKeyURL = isPrefixOf "/wiki/key:" . map toLower
 
 isTagURL :: URL -> Bool
 isTagURL = isPrefixOf "/wiki/tag:" . map toLower
@@ -98,17 +101,17 @@ instance FromJSON Revision where
         fmap parseDescription (r .: "*")
     parseJSON _ = empty
 
-tagUrlToDescriptionHistory :: v -> (Description -> Description -> Maybe v) -> String -> IO (Maybe (DescriptionHistory v))
-tagUrlToDescriptionHistory value' compareDescriptions s = revisionsToDescriptionHistory value' compareDescriptions <$> revisions s where
+urlToDescriptionHistory :: v -> (Description -> Description -> Maybe v) -> String -> IO (Maybe (DescriptionHistory v))
+urlToDescriptionHistory value' compareDescriptions s = revisionsToDescriptionHistory value' compareDescriptions <$> revisions s where
     revisions s' = do
-        rs <- descriptionStringToRevisions <$> tagUrlToDescriptionString s'
+        rs <- descriptionStringToRevisions <$> urlToDescriptionString s'
         if length rs > 1 then do
             rs' <- revisions (s ++ urlWikiHistorySuffix ++ (show . revid . last) rs)
             return $ rs ++ rs'
         else return rs
 
-tagUrlToDescriptionString :: URL -> IO String
-tagUrlToDescriptionString = fmap snd . flip curlGetString [] . urlWikiHistory . fromMaybe "" . stripPrefix urlWikiPrefix
+urlToDescriptionString :: URL -> IO String
+urlToDescriptionString = fmap snd . flip curlGetString [] . urlWikiHistory . fromMaybe "" . stripPrefix urlWikiPrefix
 
 parseDescription :: String -> Description
 parseDescription string = map (mapSnd fromJust) . filter (isJust . snd) . map (map21 (id, flip getValueForKey string)) $ descriptionKeys
@@ -131,13 +134,13 @@ descriptionStringToRevisions s = concat . maybeToList $ parseToArray =<< getValu
 
 revisionsToDescriptionHistory :: v -> (Description -> Description -> Maybe v) -> [Revision] -> Maybe (DescriptionHistory v)
 revisionsToDescriptionHistory defaultValue compareDescriptions rs
-    | null rs || isNothing key' || isNothing value' = Nothing
-    | length rs == 1 = Just . DescriptionHistory (fromJust key') (fromJust value') $ [(timestamp rs0, defaultValue)]
-    | otherwise = Just . DescriptionHistory (fromJust key') (fromJust value') $ (timestamp rs0, defaultValue) : history' where
+    | null rs || isNothing key' = Nothing
+    | length rs == 1 = Just . DescriptionHistory (fromJust key') value' $ [(timestamp rs0, defaultValue)]
+    | otherwise = Just . DescriptionHistory (fromJust key') value' $ (timestamp rs0, defaultValue) : history' where
         rs' = sortBy (comparing timestamp) rs
         rs0 = head rs'
         lookupKeyValue k = join . headMay . filter isJust . map (lookup k . description) $ rs
         key' = lookupKeyValue "key"
-        value' = lookupKeyValue "value"
+        value' = fromMaybe "*" . lookupKeyValue $ "value"
         tuples = uncurry zip . map21 (init, tail) . map description $ rs'
         history' = map (mapSnd fromJust) . filter (isJust . snd) . map (mapSnd $ uncurry compareDescriptions) . zip (tail . map timestamp $ rs') $ tuples
