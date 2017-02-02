@@ -274,6 +274,7 @@ const initPage = options => {
   }
   $('<div class="info"><span class="info-close">x</span><span class="info-symbol">?</span><span class="info-content">' + content + '</span></div>')
     .on('click', function(event) {
+      $('.info').qtip('api').hide()
       if (isShowInfo) return
       event.preventDefault()
       $('.showOnInformation').each((j, n) => $(n).qtip('api').destroy()).removeClass('showOnInformation')
@@ -285,7 +286,15 @@ const initPage = options => {
       options.onInfoShow()
       $('.qtip-content').on('click', hideInfo)
     }).appendTo('body')
-    $('.info-close').on('click', hideInfo)
+  initTooltip({
+    selector: '.info',
+    text: 'Show Information.',
+    positionMy: 'top right',
+    positionAt: 'bottom center',
+    showOnInformation: false,
+  })
+  $('.info').qtip('api').show()
+  $('.info-close').on('click', hideInfo)
 }
 
 /* OPTIONS PANEL */
