@@ -51,7 +51,7 @@ $(document).ready(() => {
     
     // page
     initPage({
-      infoDescription: 'The core tags, which are used in OSM to descripe nodes, ways, and relations, are documented in the <a href="https://wiki.openstreetmap.org/wiki/Map_Features" target="_blank">OSM wiki</a>. This documentation serves as an ontology but there is no obligation to not use other tags. This visualization explores the documentation of the tags by showing the words that have been used most in the documentation.',
+      infoDescription: 'The core tags, which are used in OSM to descripe nodes, ways, and relations, are documented in the <a href="https://wiki.openstreetmap.org/wiki/Map_Features" target="_blank">OSM wiki</a>. This documentation serves as an ontology but there is no obligation to not use other tags. This visualization explores the documentation of the tags by showing the words that have been used most in the documentation. Only words with a minimum length of 5 characters are depicted.',
       infoIdea: [franzBenjaminMocnik],
       infoProgramming: [franzBenjaminMocnik],
       infoData: [
