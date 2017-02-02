@@ -406,6 +406,12 @@ $infoTransitionDuration: .2s;
   stroke: $colorGreyVeryLight;
   stroke-width: 1px;
 }
+.timelineYears-day1 {
+  fill: #fff;
+}
+.timelineYears-day2 {
+  fill: $colorGreyVeryLight;
+}
 .timelineYears-labelMonth {
   font-size: $fontSizeSmall;
   fill: $textColorVeryLight;

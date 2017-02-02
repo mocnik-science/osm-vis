@@ -135,7 +135,7 @@ $(document).ready(() => {
       init: () => {
         initTooltip({
           selector: '.timelineYears-day:nth-child(420)',
-          text: 'There is no data available for some days. In this case, the corresponding boxes are coloured in white.',
+          text: 'There is no data available for some days. In this case, the corresponding boxes are coloured in gray/white.',
           positionMy: 'bottom left',
           positionAt: 'top center',
         })
