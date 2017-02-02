@@ -71,7 +71,7 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
       .attr('cx', d => x(d['date-wiki']))
       .attr('cy', d => y(d['date-data']))
       .attr('r', d => r(d['count']))
-    svg.selectAll('.background path').transition(t)
+    svg.selectAll('.diagonal').transition(t)
       .attr('d', d3.line().x(x).y(y))
   }
   
