@@ -27,8 +27,8 @@ out.data.forEach(wikipage => {
       .then(json => {
         if (json.length == 0 || json[0].date == undefined) callback(null)
         callback(null, {
-            date: json[0].date.substr(0, 10),
-            count: json[json.length - 1].count,
+          date: json[0].date.substr(0, 10),
+          count: json[json.length - 1].count,
         })
     }).catch(callback)
   })
