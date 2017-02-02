@@ -210,6 +210,7 @@ const initTooltip = options => {
       },
     },
   })
+  return $(options.selector)
 }
 const initPage = options => {
   options = Object.assign({}, {
