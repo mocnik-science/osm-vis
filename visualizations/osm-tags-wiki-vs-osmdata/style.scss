@@ -1,27 +1,17 @@
 @import '../../www/definitions.scss';
 
-div.tooltip {
-  position: absolute;
-  text-align: center;
-  width: auto;
-  height: auto;
-  padding: 6px 8px;
-  font: 12px sans-serif;
-  background: lightsteelblue;
-  border: none;
-  border-radius: 8px;
-  pointer-events: none;
-}
-
-div.tooltip p:first-child {
-  margin-top: 0;
-}
-div.tooltip p:last-child {
-  margin-bottom: 0;
-}
-
-svg g.background path {
-  stroke: blue;
+.diagonal {
+  stroke: $colorGrey;
   stroke-width: 2;
-  opacity: 0.2;
+  opacity: .2;
+}
+.axis-label {
+  font-size: $fontSizeSemiSmall;
+}
+.data-tooltip .date {
+  display: inline-block;
+  width: 6em;
+}
+.brush .selection {
+  fill: $colorPrimaryDark;
 }
