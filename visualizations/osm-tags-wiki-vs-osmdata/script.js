@@ -1,5 +1,5 @@
 d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
-  const data = dataset.data
+  const data = dataset.data.filter(d => d['date-wiki'] !== null && d['date-data'] !== null)
   data.forEach(d => {
     d['date-wiki'] = new Date(d['date-wiki'])
     d['date-data'] = new Date(d['date-data'])
