@@ -155,6 +155,26 @@ const sliderTime = options => {
   initPlaying()
 }
 
+/* DATA TOOLTIP */
+const initDataTooltip = () => {
+  d3.select('body').append('div')
+    .classed('data-tooltip', true)
+    .style('opacity', 0)
+}
+const showDataTooltip = (left, top, title, text) => {
+  $('.data-tooltip').html(`<h3>${title}</h3><div>${text}</div>`)
+  d3.select('.data-tooltip').transition()
+    .style('left', (left + 8) + 'px')
+    .style('top', Math.min(top - 16, window.innerHeight - $('.data-tooltip').outerHeight() - 4) + 'px')
+    .duration(200)
+    .style('opacity', .9)
+}
+const hideDataTooltip = () => {
+  d3.select('.data-tooltip').transition()
+    .duration(200)
+    .style('opacity', 0)
+}
+
 /* INFORMATION */
 const initTooltip = options => {
   options = R.merge({

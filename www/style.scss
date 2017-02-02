@@ -127,6 +127,9 @@ body.index {
   }
 }
 body.fixed {
+  position: fixed;
+  width: 100%;
+  height: 100%;
   .svg {
     position: absolute;
   }
@@ -187,6 +190,29 @@ body.scrolling {
     cursor: pointer;
   }
 }
+/** DATA TOOLTIP **/
+.data-tooltip {
+  position: absolute;
+  display: block;
+  z-index: 1000;
+  padding: 5px 9px;
+  background: $colorDataTooltip;
+  border: 1px solid $colorDataTooltipBorder;
+  border-radius: 5px;
+  font-size: $fontSize;
+  color: $textColor;
+  pointer-events: none;
+  h3 {
+    font-family: $fontFamily;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-size: 12px;
+    text-align: center;
+  }
+  h3, h3:first-letter {
+    text-transform: none!important;
+  }
+}
 /** PAGE **/
 .back {
   position: fixed;
@@ -198,8 +224,8 @@ body.scrolling {
   color: $colorPrimaryLightText;
 }
 .qtip-info {
-  border: 1px solid #ffecb3!important;
-  background-color: #ffffa3!important;
+  border: 1px solid $colorDataTooltipBorder!important;
+  background-color: $colorDataTooltip!important;
   font-size: $fontSize;
   color: $textColor;
 }
@@ -339,7 +365,6 @@ $infoTransitionDuration: .2s;
     float: right;
   }
 }
-
 /* OPTIONS PANEL */
 .panel {
   position: absolute;
