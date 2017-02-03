@@ -30,7 +30,7 @@ The author would like to thank the following persons for providing useful commen
 
 ## Author
 
-This application is written and maintained by Franz-Benjamin Mocnik, <mail@mocnik-science.net>.
+This application is written and maintained by Franz-Benjamin Mocnik, <mail@mocnik-science.net>. Conbributions were made by Martin Raifer.
 
 (c) by Franz-Benjamin Mocnik, 2016.
 
