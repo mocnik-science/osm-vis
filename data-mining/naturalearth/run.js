@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 const URL = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson.gz'
-const DATA_PATH = '../../data/naturalearth'
+const DATA_PATH = '../../data'
 const DATA_FILE_GEO = 'ne_110m_admin_0_countries.geojson'
 const DATA_FILE_GEO_TMP = 'countries.geojson'
-const DATA_FILE_TOPO = 'ne_110m_admin_0_countries.topojson'
+const DATA_FILE_TOPO = 'naturalearth_ne_110m_admin_0_countries.topojson'
 const DATA_FILE_TOPO_TMP = 'countries.topojson'
 const geo2topo = '../../node_modules/.bin/geo2topo'
 

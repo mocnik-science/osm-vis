@@ -1,5 +1,5 @@
 $(document).ready(() => {
-  d3.json('../data/osmstats/osmstats.json', datasetJson => {
+  d3.json('../data/osmstats.json', datasetJson => {
     // prepare the data
     const dataset = R.compose(
         R.values,

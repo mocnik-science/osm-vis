@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const URL = 'http://blackadder.dev.openstreetmap.org/OSMStats/osmstats20160916.csv'
-const DATA_PATH = '../../data/osmstats'
+const DATA_PATH = '../../data'
 const DATA_FILE = 'osmstats.json'
 
 const execSync = require('child_process').execSync

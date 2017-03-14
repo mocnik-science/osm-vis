@@ -2,7 +2,7 @@ const width = .8 * window.innerWidth
 const height = .96 * window.innerHeight - 160
 
 $(document).ready(() => {
-  d3.json('../data/naturalearth/ne_110m_admin_0_countries.topojson', datasetCountries => {
+  d3.json('../data/naturalearth_ne_110m_admin_0_countries.topojson', datasetCountries => {
     d3.json('../data/osm-node-changes-per-area.json', dataset => {
       // prepare data
       const dataTopoJson = datasetCountries.countries
