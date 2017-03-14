@@ -2,12 +2,12 @@
 
 # osm-vis/osm-node-changes-per-area
 cd data-mining/osm-node-changes-per-area
-cabal sandbox init && cabal update && cabal install
+cabal sandbox init && cabal update && cabal install --force-reinstalls
 cd ../..
 
 # osm-vis/osm-tags-history-wiki
 cd data-mining/osm-tags-history-wiki
-cabal sandbox init && cabal update && cabal install
+cabal sandbox init && cabal update && cabal install --force-reinstalls
 cd ../..
 
 # osm-vis/osm-tags-wiki-vs-osmdata
@@ -17,5 +17,5 @@ cd ../..
 
 # osm-vis/osm-tags-word-frequency-wiki
 cd data-mining/osm-tags-word-frequency-wiki
-cabal sandbox init && cabal update && cabal install
+cabal sandbox init && cabal update && cabal install --force-reinstalls
 cd ../..
