@@ -33,6 +33,10 @@ npm run dist
 
 The directory `www-dist` inside your repository should now contain all html, css, and js files, as well as the data, used for the visualizations. Upload them to any server you like. Enjoy exploring OSM visualizations!
 
+## Installation automatic data mining
+
+see [documentation of automated data mining](docs/automatic_data_mining.md)
+
 ## Acknowledgements
 
 The author would like to thank the following persons for providing useful comments: Michael Auer, Chiao-Ling Kuo, Lukas Loos, Martin Raifer, Alexander Zipf.
