@@ -5,8 +5,8 @@ cd data-mining/osm-node-changes-per-area
 cabal sandbox init && cabal update && cabal install
 cd ../..
 
-# osm-vis/osm-tags-history-wiki-data
-cd data-mining/osm-tags-history-wiki-data
+# osm-vis/osm-tags-history-wiki
+cd data-mining/osm-tags-history-wiki
 cabal sandbox init && cabal update && cabal install
 cd ../..
 
