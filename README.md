@@ -4,7 +4,16 @@ OSMvis is a collection of visualizations related to [OpenStreetMap (OSM)](http:/
 
 ## Website
 
-A running version of OSMvis can be found on **[http://projects.mocnik-science.net/osm-vis/](http://projects.mocnik-science.net/osm-vis/)**.
+A running version of OSMvis can be found on:
+
+* **[http://osm-vis.geog.uni-heidelberg.de](http://osm-vis.geog.uni-heidelberg.de)**, and
+* **[http://projects.mocnik-science.net/osm-vis/](http://projects.mocnik-science.net/osm-vis/)**.
+
+## Data
+
+The data that is visualized can either be mined as described in the following section, or by downloading it from the following repository:
+
+[http://github.com/mocnik-science/osm-vis-data](http://github.com/mocnik-science/osm-vis-data)
 
 ## Installation
 
