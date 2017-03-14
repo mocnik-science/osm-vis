@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+
+if [ "$HOSTNAME" = "osm-vis" ]; then
+    npm run dist
+    rm -rf ../www/*
+    cp -R www-dist/ ../www/
+fi
