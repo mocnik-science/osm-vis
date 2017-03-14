@@ -3,4 +3,4 @@ set -e
 
 npm run dist
 rm -rf ../www/*
-cp -R www-dist/ ../www/
+cp -R www-dist/* ../www/
