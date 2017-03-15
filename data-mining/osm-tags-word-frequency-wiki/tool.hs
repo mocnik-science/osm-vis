@@ -1,4 +1,3 @@
-{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -56,8 +55,9 @@ dataSource' = "OpenStreetMap project, <a href=\"http://wiki.openstreetmap.org/wi
 main :: IO ()
 main = do
     wordFrequencies <- forM consideredLanguages $ \lang -> do
+        stopwords <- filter (not . isPrefixOf "%") . lines <$> (readFile . stopwordsFile) lang
         tagUrls <- listOfTagUrls lang . urlWikiOverview $ lang
-        wss <- mapM (rawToWords lang) =<< mapM downloadRaw tagUrls
+        wss <- map (rawToWords stopwords) <$> mapM downloadRaw tagUrls
         return $ WordFrequency (langName lang) (take numberOfWords . computeWordFrequency . concat $ wss) (take numberOfWords . computeWordFrequency . concatMap nubOrd $ wss)
     timestamp' <- formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%S%Z" <$> getCurrentTime
     C.writeFile outputFile . encode $ Result timestamp' dataDescription' dataSource' (urlWikiOverview . head $ consideredLanguages) wordFrequencies
@@ -93,13 +93,11 @@ isTagURL lang = isPrefixOf ("/wiki/" ++ langPrefix lang ++ "tag:") . map toLower
 downloadRaw :: URL -> IO String
 downloadRaw = fmap snd . flip curlGetString [] . urlWikiRaw . fromMaybe "" . stripPrefix urlWikiPrefix
 
-rawToWords :: Language -> String -> IO [String]
-rawToWords lang = fmap ignoreWords4 . ignoreWords3 . map (removeCharacters2 . removeCharacters1) . ignoreWords2 . ignoreWords1 . map (map toLower) . words where
+rawToWords :: [String] -> String -> [String]
+rawToWords stopwords = ignoreWords4 . ignoreWords3 . map (removeCharacters2 . removeCharacters1) . ignoreWords2 . ignoreWords1 . map (map toLower) . words where
     ignoreWords1 = flip (foldl (flip $ filter . notElem)) ignoreWordsWithCharacter
     ignoreWords2 = filter (`notElem` wordsToIgnore)
-    ignoreWords3 ws = do
-        !stopwords <- filter (not . isPrefixOf "%") . lines <$> (readFile . stopwordsFile) lang
-        return . filter (`notElem` stopwords) $ ws
+    ignoreWords3 = filter (`notElem` stopwords)
     ignoreWords4 = filter ((>= minWordLength) . length)
     removeCharacters1 = filter (`notElem` charactersToRemoveFromRaw)
     removeCharacters2 = reverse . f . reverse . f where
