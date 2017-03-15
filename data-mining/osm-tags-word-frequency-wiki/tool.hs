@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -97,7 +98,7 @@ rawToWords lang = fmap ignoreWords4 . ignoreWords3 . map (removeCharacters2 . re
     ignoreWords1 = flip (foldl (flip $ filter . notElem)) ignoreWordsWithCharacter
     ignoreWords2 = filter (`notElem` wordsToIgnore)
     ignoreWords3 ws = do
-        stopwords <- filter (not . isPrefixOf "%") . lines <$> (readFile . stopwordsFile) lang
+        !stopwords <- filter (not . isPrefixOf "%") . lines <$> (readFile . stopwordsFile) lang
         return . filter (`notElem` stopwords) $ ws
     ignoreWords4 = filter ((>= minWordLength) . length)
     removeCharacters1 = filter (`notElem` charactersToRemoveFromRaw)
