@@ -15,6 +15,8 @@ The data that is visualized can either be mined as described in the following se
 
 [http://github.com/mocnik-science/osm-vis-data](http://github.com/mocnik-science/osm-vis-data)
 
+Please prefer using this data to avoid accessing the original data sources to frequently.
+
 ## Installation
 
 The repository contains all source code to generate a directory containing only static files to be uploaded to a web server. Please run the following steps to generate this directory:
