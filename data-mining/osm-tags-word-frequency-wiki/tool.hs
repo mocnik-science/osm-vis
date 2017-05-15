@@ -21,7 +21,7 @@ urlWikiPrefix = "/wiki/"
 urlWikiOverview :: Language -> String
 urlWikiOverview lang = urlWikiBase ++ urlWikiPrefix ++ langPrefix lang ++ "Map_Features"
 urlWikiKeyValue :: Language -> String -> String -> String
-urlWikiKeyValue lang k v = urlWikiBase ++ urlWikiPrefix ++ langPrefix lang ++ "Tag:" ++ k ++ "%3D" ++ v
+urlWikiKeyValue lang k v = urlWikiPrefix ++ langPrefix lang ++ "Tag:" ++ k ++ "%3D" ++ v
 consideredLanguages :: [Language]
 consideredLanguages = [
     Language "english" "en" "",

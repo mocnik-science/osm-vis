@@ -27,7 +27,7 @@ urlWikiPrefix = "/wiki/"
 urlWikiOverview :: String
 urlWikiOverview = urlWikiBase ++ urlWikiPrefix ++ "Map_Features"
 urlWikiKeyValue :: String -> String -> String
-urlWikiKeyValue k v = urlWikiBase ++ urlWikiPrefix ++ "Tag:" ++ k ++ "%3D" ++ v
+urlWikiKeyValue k v = urlWikiPrefix ++ "Tag:" ++ k ++ "%3D" ++ v
 urlWikiHistory :: String -> String
 urlWikiHistory url = urlWikiBase ++ "/w/api.php?action=query&format=json&titles=" ++ url ++ "&prop=revisions&rvprop=timestamp|ids|content&rvlimit=500&continue="
 urlWikiHistorySuffix :: String
@@ -68,8 +68,8 @@ detectAllDifferences dOld dNew
 -- --== EXTRACT TAGS
 
 listOfTagUrls :: URL -> IO [URL]
-listOfTagUrls = uncurry (liftM2 (++)) . map21 (findHardcoded, findByTaglists) where
-    findHardcoded = fmap (nubOrd . filter (uncurry (||) . map21 (isKeyURL, isTagURL)) . fromMaybe []) .* flip scrapeURL . attrs "href" $ "a"
+listOfTagUrls = fmap nubOrd . uncurry (liftM2 (++)) . map21 (findHardcoded, findByTaglists) where
+    findHardcoded = fmap (filter (uncurry (||) . map21 (isKeyURL, isTagURL)) . fromMaybe []) .* flip scrapeURL . attrs "href" $ "a"
     findByTaglists = fmap (nubOrd . map (uncurry urlWikiKeyValue) . concatMap (findTags "" []) . fromMaybe []) .* flip scrapeURL . attrs "data-taginfo-taglist-tags" $ "div"
     findTags lastKey ls x
         | isNothing remainder = ls'
