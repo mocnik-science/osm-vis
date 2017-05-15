@@ -26,6 +26,8 @@ urlWikiPrefix :: String
 urlWikiPrefix = "/wiki/"
 urlWikiOverview :: String
 urlWikiOverview = urlWikiBase ++ urlWikiPrefix ++ "Map_Features"
+urlWikiKeyValue :: String -> String -> String
+urlWikiKeyValue k v = urlWikiBase ++ urlWikiPrefix ++ "Tag:" ++ k ++ "%3D" ++ v
 urlWikiHistory :: String -> String
 urlWikiHistory url = urlWikiBase ++ "/w/api.php?action=query&format=json&titles=" ++ url ++ "&prop=revisions&rvprop=timestamp|ids|content&rvlimit=500&continue="
 urlWikiHistorySuffix :: String
@@ -66,13 +68,26 @@ detectAllDifferences dOld dNew
 -- --== EXTRACT TAGS
 
 listOfTagUrls :: URL -> IO [URL]
-listOfTagUrls = fmap (nubOrd . filter (uncurry (||) . map21 (isKeyURL, isTagURL)) . fromMaybe []) .* flip scrapeURL . attrs "href" $ "a"
+listOfTagUrls = uncurry (liftM2 (++)) . map21 (findHardcoded, findByTaglists) where
+    findHardcoded = fmap (nubOrd . filter (uncurry (||) . map21 (isKeyURL, isTagURL)) . fromMaybe []) .* flip scrapeURL . attrs "href" $ "a"
+    findByTaglists = fmap (nubOrd . map (uncurry urlWikiKeyValue) . concatMap (findTags "" []) . fromMaybe []) .* flip scrapeURL . attrs "data-taginfo-taglist-tags" $ "div"
+    findTags lastKey ls x
+        | isNothing remainder = ls'
+        | otherwise = findTags (fst . head $ ls') ls' (fromJust remainder) where
+            (current, remainder) = splitOnFirst ',' x
+            (current1, current2) = splitOnFirst '=' current
+            ls'
+                | isNothing current2 = (lastKey, current1):ls
+                | otherwise = (current1, fromJust current2):ls
+
+isTemplate :: URL -> Bool
+isTemplate = isPrefixOf (urlWikiPrefix ++ "template:map_features:") . map toLower
 
 isKeyURL :: URL -> Bool
-isKeyURL = isPrefixOf "/wiki/key:" . map toLower
+isKeyURL = isPrefixOf (urlWikiPrefix ++ "key:") . map toLower
 
 isTagURL :: URL -> Bool
-isTagURL = isPrefixOf "/wiki/tag:" . map toLower
+isTagURL = isPrefixOf (urlWikiPrefix ++ "tag:") . map toLower
 
 -- --== EXTRACT DESCRIPTION
 

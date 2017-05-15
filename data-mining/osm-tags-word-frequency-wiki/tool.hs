@@ -20,6 +20,8 @@ urlWikiPrefix :: String
 urlWikiPrefix = "/wiki/"
 urlWikiOverview :: Language -> String
 urlWikiOverview lang = urlWikiBase ++ urlWikiPrefix ++ langPrefix lang ++ "Map_Features"
+urlWikiKeyValue :: Language -> String -> String -> String
+urlWikiKeyValue lang k v = urlWikiBase ++ urlWikiPrefix ++ langPrefix lang ++ "Tag:" ++ k ++ "%3D" ++ v
 consideredLanguages :: [Language]
 consideredLanguages = [
     Language "english" "en" "",
@@ -83,10 +85,23 @@ data Language = Language {langName :: String, langISO :: String, langPrefix :: S
 -- --== EXTRACT TAGS
 
 listOfTagUrls :: Language -> URL -> IO [URL]
-listOfTagUrls lang = fmap (nubOrd . filter (isTagURL lang) . fromMaybe []) .* flip scrapeURL . attrs "href" $ "a"
+listOfTagUrls lang = uncurry (liftM2 (++)) . map21 (findHardcoded, findByTaglists) where
+    findHardcoded = fmap (nubOrd . filter (isTagURL lang) . fromMaybe []) .* flip scrapeURL . attrs "href" $ "a"
+    findByTaglists = fmap (nubOrd . map (uncurry $ urlWikiKeyValue lang) . concatMap (findTags "" []) . fromMaybe []) .* flip scrapeURL . attrs "data-taginfo-taglist-tags" $ "div"
+    findTags lastKey ls x
+        | isNothing remainder = ls'
+        | otherwise = findTags (fst . head $ ls') ls' (fromJust remainder) where
+            (current, remainder) = splitOnFirst ',' x
+            (current1, current2) = splitOnFirst '=' current
+            ls'
+                | isNothing current2 = (lastKey, current1):ls
+                | otherwise = (current1, fromJust current2):ls
+
+isTemplate :: URL -> Bool
+isTemplate = isPrefixOf (urlWikiPrefix ++ "template:map_features:") . map toLower
 
 isTagURL :: Language -> URL -> Bool
-isTagURL lang = isPrefixOf ("/wiki/" ++ langPrefix lang ++ "tag:") . map toLower
+isTagURL lang = isPrefixOf (urlWikiPrefix ++ langPrefix lang ++ "tag:") . map toLower
 
 -- --== EXTRACT CONTENT OF PAGE
 
