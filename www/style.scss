@@ -371,6 +371,7 @@ $infoTransitionDuration: .2s;
   bottom: 90px;
   left: 30px;
   width: 200px;
+  z-index: 1000;
   hr {
     border: 1px solid $colorGreyVeryLight;
     margin-top: 10px;
