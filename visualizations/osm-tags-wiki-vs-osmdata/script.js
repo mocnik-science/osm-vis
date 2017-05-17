@@ -1,12 +1,13 @@
+const thresholds = [1, 10, 100, 1000]
+
 d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
-  const data = dataset.data.filter(d => d['date-wiki'] !== null && d['date-data'] !== null && d['date-data'] !== '')
-  data.forEach(d => {
+  dataset.data.forEach(d => {
     d['date-wiki'] = new Date(d['date-wiki'])
-    d['date-data'] = new Date(d['date-data'])
+    for (const threshold of thresholds) d[`date-data-${threshold}`] = new Date(d[`date-data-${threshold}`])
     d['count'] = +d['count']
   })
-  
-  const dates = R.compose(R.map(moment), R.flatten)([R.map(R.prop('date-wiki'), data), R.map(R.prop('date-data'), data)])
+  const data = dataset.data
+  const dates = R.compose(R.map(moment), R.flatten)([R.map(R.prop('date-wiki'), data), ...R.map(threshold => R.map(R.prop(`date-data-${threshold}`), data), thresholds)])
   const datesInterval = [moment.min(dates), moment.max(dates)]
   
   const formatDate = d3.timeFormat('%Y-%m-%d')
@@ -28,7 +29,7 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
   
   const brush = d3.brush().on('end', () => brushended())
   
-  var idleTimeout
+  let idleTimeout
   const idleDelay = 350
   
   // tooltip
@@ -46,7 +47,7 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
     .classed('brush', true)
     .call(brush)
   const brushended = () => {
-    var s = d3.event.selection
+    const s = d3.event.selection
     if (!s) {
       if (!idleTimeout) return idleTimeout = setTimeout(idled, idleDelay)
       x.domain(x0)
@@ -63,29 +64,7 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
   const idled = () => {
     idleTimeout = null
   }
-  const zoom = () => {
-    var t = svg.transition().duration(750)
-    svg.select('.axis-x').transition(t).call(xAxis)
-    svg.select('.axis-y').transition(t).call(yAxis)
-    svg.selectAll('circle').transition(t)
-      .attr('cx', d => x(d['date-wiki']))
-      .attr('cy', d => y(d['date-data']))
-      .attr('r', d => r(d['count']))
-    svg.selectAll('.diagonal').transition(t)
-      .attr('d', d3.line().x(x).y(y))
-  }
-  
-  // data
-  svg.selectAll('circle')
-    .data(data)
-    .enter().append('circle')
-      .attr('cx', d => x(d['date-wiki']))
-      .attr('cy', d => y(d['date-data']))
-      .attr('r', d => r(d['count']))
-      .attr('fill', d => key(d['key']))
-      .attr('opacity', .75)
-      .on('mouseover', d => showDataTooltip(d3.event.pageX, d3.event.pageY, `${d['key']}=${d['value']}`, `<span class="date">${formatDate(d['date-wiki'])}</span> first documention in the OSM wiki<br><span class="date">${formatDate(d['date-data'])}</span> first use in the OSM database`))
-      .on('mouseout', () => hideDataTooltip())
+  let zoom = () => {}
   
   // axes
   const axes = svg.append('g')
@@ -109,15 +88,84 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
     .call(yAxis2)
   axes.append('text')
     .classed('axis-label', true)
+    .classed('axis-label-y', true)
     .attr('transform', 'rotate(-90)')
     .attr('x', - height / 2)
     .attr('y', 50)
     .style('text-anchor', 'middle')
-    .text('first use in OSM database')
   
+  // data
+  const dataCircles = svg.selectAll('circle')
+    .data(data)
+    .enter().append('circle')
+      .attr('cx', d => x(d['date-wiki']))
+      .attr('cy', d => y(d[`date-data-${thresholds[0]}`]))
+      .attr('r', d => r(d['count']))
+      .attr('fill', d => key(d['key']))
+      .attr('opacity', .75)
+      .on('mouseover', d => showDataTooltip(d3.event.pageX, d3.event.pageY, `${d['key']}=${d['value']}`, tooltipText(d)))
+      .on('mouseout', () => hideDataTooltip())
+  
+  // update for threshold
+  const thresholdToString = threshold => {
+    if (threshold == 1) return 'first'
+    else if (threshold == 2) return `${threshold}-nd`
+    else if (threshold == 3) return `${threshold}-rd`
+    else return `${threshold}-th`
+  }
+  const tooltipText = d => {
+    let text = `<span class="date">${formatDate(d['date-wiki'])}</span> first documention in the OSM wiki`
+    for (const threshold of thresholds) text += `<br><span class="date">${formatDate(d[`date-data-${threshold}`])}</span> ${thresholdToString(threshold)} use in the OSM database`
+    return text
+  }
+  const updateForThreshold = threshold => {
+    // brush
+    zoom = () => {
+      const t = svg.transition().duration(750)
+      svg.select('.axis-x').transition(t).call(xAxis)
+      svg.select('.axis-y').transition(t).call(yAxis)
+      svg.selectAll('circle').transition(t)
+        .attr('cx', d => x(d['date-wiki']))
+        .attr('cy', d => y(d[`date-data-${threshold}`]))
+        .attr('r', d => r(d['count']))
+      svg.selectAll('.diagonal').transition(t)
+        .attr('d', d3.line().x(x).y(y))
+    }
+    
+    // axis
+    d3.selectAll('.axis-label-y')
+      .text(`${thresholdToString(threshold)} use in OSM database`)
+
+    // data
+    dataCircles
+      .transition(idleDelay)
+      .attr('cy', d => y(d[`date-data-${threshold}`]))
+  }
+  
+  // options panel
+  const thresholdValues = {}
+  let thresholdValuesFirst = true
+  for (const threshold of thresholds) {
+    if (thresholdValuesFirst) {
+      thresholdValuesFirst = false
+      thresholdValues[threshold] = {label: `${thresholdToString(threshold)} use`, selected: true}
+    } else {
+      thresholdValues[threshold] = `${thresholdToString(threshold)} use`
+    }
+  }
+  new OptionsPanel({
+    elements: [{
+      type: 'radio',
+      name: 'threshold',
+      values: thresholdValues,
+    }],
+    onStoreUpdate: store => updateForThreshold(store.threshold),
+  })
+  $('.panel').css({marginBottom: -$('.panel').outerHeight() / 2})
+
   // page
   initPage({
-    infoDescription: 'The core tags, which are used in OSM to describe nodes, ways, and relations, are usually documented in the <a href="https://wiki.openstreetmap.org/wiki/Map_Features" target="_blank">OSM wiki</a>. There is, however, no formal requirement to do so, and tags are, in consequence, used in the OSM database often before they are documented in the OSM wiki, if at all. This visualization explores how these two dates, the first use in the OSM database and the first documentation in the OSM wiki, correlate.',
+    infoDescription: 'The core tags, which are used in OSM to describe nodes, ways, and relations, are usually documented in the <a href="https://wiki.openstreetmap.org/wiki/Map_Features" target="_blank">OSM wiki</a>. There is, however, no formal requirement to do so, and tags are, in consequence, used in the OSM database often before they are documented in the OSM wiki, if at all. This visualization explores how these two dates, the first (or later) use in the OSM database and the first documentation in the OSM wiki, correlate.',
     infoIdea: [martinRaifer],
     infoProgramming: [martinRaifer, franzBenjaminMocnik],
     infoData: [dataset],
