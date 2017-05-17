@@ -177,7 +177,7 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
       })
       initTooltip({
         selector: '.diagonal',
-        text: 'A tag which is documentedf in the OSM wiki at the time of its first use in the OSM database is depicted on the diagonal',
+        text: 'A tag which is documented in the OSM wiki at the time of its first use in the OSM database is depicted on the diagonal',
         positionMy: 'bottom right',
         positionAt: 'center',
       })
