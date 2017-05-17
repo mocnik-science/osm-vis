@@ -1,3 +1,5 @@
+"use strict";
+
 const queue = require('d3-queue').queue
 const fetch = require('node-fetch')
 const fs = require('fs')
