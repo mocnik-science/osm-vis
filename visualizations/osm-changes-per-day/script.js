@@ -23,7 +23,7 @@ $(document).ready(() => {
     
     // options panel
     new OptionsPanel({
-        elements: [
+      elements: [
         {
           type: 'radio',
           name: 'data',
