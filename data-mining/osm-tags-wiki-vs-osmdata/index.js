@@ -48,6 +48,6 @@ miningQueue.awaitAll((err, results) => {
     if (!result) return
     for (let k in result) out.data[index][k] = result[k]
   })
-  out.data = out.data.filter(d => d['count'] !== undefined && d['date-wiki'] !== undefined && d[`date-data-${Math.max(...thresholds)}`] !== undefined)
+  out.data = out.data.filter(d => d['count'] !== undefined && d['date-wiki'] !== undefined && d[`date-data-${Math.max.apply(Math, thresholds)}`] !== undefined)
   fs.writeFileSync('../../data/osm-tags-wiki-vs-osmdata.json', JSON.stringify(out))
 })
