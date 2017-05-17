@@ -23,17 +23,17 @@ const miningQueue = queue(3)
 out.data.forEach(wikipage => {
   miningQueue.defer(callback => {
     fetch(`http://taghistory.raifer.tech/***/${encodeURIComponent(wikipage.key)}${(wikipage.value !== '*') ? '/' + encodeURIComponent(wikipage.value) : ''}`)
-    .then(response => response.json())
-    .then(json => {
-      if (json.length == 0 || json[0].date == undefined) callback(null)
-      const threshold = 1000
-      date = json.reduce((acc,val) => (acc === '' && val.count > threshold) ? val.date : acc, '')
-      callback(null, {
-        date: date.substr(0, 10),//json[0].date.substr(0, 10),
-        count: json[json.length - 1].count,
+      .then(response => response.json())
+      .then(json => {
+        if (json.length == 0 || json[0].date == undefined) callback(null)
+        const threshold = 1000
+        date = json.reduce((acc,val) => (acc === '' && val.count > threshold) ? val.date : acc, '')
+        callback(null, {
+          date: date.substr(0, 10),
+          count: json[json.length - 1].count,
+        })
       })
-    })
-    .catch(callback)
+      .catch(callback)
   })
 })
 
