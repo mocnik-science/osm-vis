@@ -109,9 +109,9 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
   // update for threshold
   const thresholdToString = threshold => {
     if (threshold == 1) return 'first'
-    else if (threshold == 2) return `${threshold}-nd`
-    else if (threshold == 3) return `${threshold}-rd`
-    else return `${threshold}-th`
+    else if (threshold == 2) return `${threshold}nd`
+    else if (threshold == 3) return `${threshold}rd`
+    else return `${threshold}th`
   }
   const tooltipText = d => {
     let text = `<span class="date">${formatDate(d['date-wiki'])}</span> first documention in the OSM wiki`
