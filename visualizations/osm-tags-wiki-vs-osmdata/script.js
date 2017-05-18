@@ -1,13 +1,19 @@
 const thresholds = [1, 10, 100, 1000]
+const thresholdsPercent = [1, 5, 10, 20]
 
 d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
   dataset.data.forEach(d => {
     d['date-wiki'] = new Date(d['date-wiki'])
     for (const threshold of thresholds) d[`date-data-${threshold}`] = new Date(d[`date-data-${threshold}`])
+    for (const threshold of thresholdsPercent) d[`date-data-percent-${threshold}`] = new Date(d[`date-data-percent-${threshold}`])
     d['count'] = +d['count']
   })
   const data = dataset.data
-  const dates = R.compose(R.map(moment), R.flatten)([R.map(R.prop('date-wiki'), data), ...R.map(threshold => R.map(R.prop(`date-data-${threshold}`), data), thresholds)])
+  const dates = R.compose(R.map(moment), R.flatten)([
+    R.map(R.prop('date-wiki'), data),
+    ...R.map(threshold => R.map(R.prop(`date-data-${threshold}`), data), thresholds),
+    ...R.map(threshold => R.map(R.prop(`date-data-percent-${threshold}`), data), thresholdsPercent)
+  ])
   const datesInterval = [moment.min(dates), moment.max(dates)]
   
   const formatDate = d3.timeFormat('%Y-%m-%d')
@@ -108,14 +114,16 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
   
   // update for threshold
   const thresholdToString = threshold => {
-    if (threshold == 1) return 'first'
-    else if (threshold == 2) return `${threshold}nd`
-    else if (threshold == 3) return `${threshold}rd`
-    else return `${threshold}th`
+    if (threshold == 1) return 'first use'
+    else if (threshold == 2) return `${threshold}nd use`
+    else if (threshold == 3) return `${threshold}rd use`
+    else return `${threshold}th use`
   }
+  const thresholdPercentToString = threshold => `${threshold}% of current use`
   const tooltipText = d => {
     let text = `<span class="date">${formatDate(d['date-wiki'])}</span> first documention in the OSM wiki`
-    for (const threshold of thresholds) text += `<br><span class="date">${formatDate(d[`date-data-${threshold}`])}</span> ${thresholdToString(threshold)} use in the OSM database`
+    for (const threshold of thresholds) text += `<br><span class="date">${formatDate(d[`date-data-${threshold}`])}</span> ${thresholdToString(threshold)} in the OSM database`
+    for (const threshold of thresholdsPercent) text += `<br><span class="date">${formatDate(d[`date-data-percent-${threshold}`])}</span> ${thresholdPercentToString(threshold)} in the OSM database`
     return text
   }
   const updateForThreshold = threshold => {
@@ -133,8 +141,9 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
     }
     
     // axis
+    const thresholdString = (threshold.startsWith('percent-')) ? thresholdPercentToString(threshold.slice(8)) : thresholdToString(threshold)
     d3.selectAll('.axis-label-y')
-      .text(`${thresholdToString(threshold)} use in OSM database`)
+      .text(`${thresholdString} in OSM database`)
 
     // data
     dataCircles
@@ -148,11 +157,12 @@ d3.json('../data/osm-tags-wiki-vs-osmdata.json', dataset => {
   for (const threshold of thresholds) {
     if (thresholdValuesFirst) {
       thresholdValuesFirst = false
-      thresholdValues[threshold] = {label: `${thresholdToString(threshold)} use`, selected: true}
+      thresholdValues[threshold] = {label: thresholdToString(threshold), selected: true}
     } else {
-      thresholdValues[threshold] = `${thresholdToString(threshold)} use`
+      thresholdValues[threshold] = thresholdToString(threshold)
     }
   }
+  for (const threshold of thresholdsPercent) thresholdValues[`percent-${threshold}`] = thresholdPercentToString(threshold)
   new OptionsPanel({
     elements: [{
       type: 'radio',

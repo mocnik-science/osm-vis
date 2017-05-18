@@ -19,6 +19,7 @@ const out = {
 }
 
 const thresholds = [1, 10, 100, 1000]
+const thresholdsPercent = [1, 5, 10, 20]
 
 const miningQueue = queue(3)
 
@@ -36,6 +37,11 @@ out.data.forEach(wikipage => {
           const v = json.reduce((acc, val) => (acc === '' && val.count >= threshold) ? val.date : acc, '').substr(0, 10)
           if (v != '') values[`date-data-${threshold}`] = v
         }
+        for (let threshold of thresholdsPercent) {
+          const countCurrent = json[json.length - 1].count
+          const v = json.reduce((acc, val) => (acc === '' && val.count >= threshold / 100 * countCurrent) ? val.date : acc, '').substr(0, 10)
+          if (v != '') values[`date-data-percent-${threshold}`] = v
+        }
         callback(null, values)
       })
       .catch(callback)
@@ -48,6 +54,6 @@ miningQueue.awaitAll((err, results) => {
     if (!result) return
     for (let k in result) out.data[index][k] = result[k]
   })
-  out.data = out.data.filter(d => d['count'] !== undefined && d['date-wiki'] !== undefined && d[`date-data-${Math.max.apply(Math, thresholds)}`] !== undefined)
+  out.data = out.data.filter(d => d['count'] !== undefined && d['date-wiki'] !== undefined && d[`date-data-${Math.max.apply(Math, thresholds)}`] !== undefined && d[`date-data-percent-${Math.max.apply(Math, thresholdsPercent)}`] !== undefined)
   fs.writeFileSync('../../data/osm-tags-wiki-vs-osmdata.json', JSON.stringify(out))
 })
