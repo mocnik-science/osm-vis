@@ -80,7 +80,7 @@ $(document).ready(() => {
         callback: redraw,
         width: width,
         label: 'UTC',
-        labelLeft: moment(dataset.dataTimestamp).format('YYYY-MM-DD'),
+        labelLeft: moment(dataset.dataTimestamp).subtract(1, 'day').format('YYYY-MM-DD'),
         playingHide: false,
         playingSpeed: 2,
       })
