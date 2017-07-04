@@ -444,3 +444,13 @@ $infoTransitionDuration: .2s;
     fill: $textColor;
   }
 }
+
+/* MAPS */
+.leaflet-container {
+  background-color: #fff;
+  .leaflet-control-attribution {
+    background: none;
+    font-size: $fontSizeSmall;
+    margin-bottom: -3px;
+  }
+}

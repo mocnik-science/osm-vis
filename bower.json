@@ -19,6 +19,7 @@
     "topojson": "^2.2.0",
     "qtip2": "^2.2.1",
     "d3-cloud": "^1.2.2",
-    "d3-scale-chromatic": "^1.1.0"
+    "d3-scale-chromatic": "^1.1.0",
+    "leaflet": "^1.1.0"
   }
 }
