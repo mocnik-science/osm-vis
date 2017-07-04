@@ -22,6 +22,15 @@ const libQTip2 = {name: 'qTip2', url: 'http://qtip2.com'}
 const libIonRangeSlider = {name: 'Ion.RangeSlider', url: 'http://ionden.com/a/plugins/ion.rangeSlider/en.html'}
 const libsDefault = [libD3, libMoment, libRamda, libJQuery, libQTip2]
 
+const heigitDB = () => {
+  return {
+    dataTimestamp: moment().format(),
+    dataDescription: 'data fetched from the HeiGIT HistoryDB database',
+    dataSource: 'OpenStreetMap project, <a href="http://wiki.openstreetmap.org/wiki/Wiki_content_license" target="_blank">CC BY-SA 2.0</a>',
+    dataUrl: 'http://heigit.org',
+  }
+}
+
 /* COLOURS */
 
 const colorPrimaryDark = '#4682b4'
