@@ -94,9 +94,9 @@ const sliderTime = options => {
     keyboard_step: 2,
     onChange: n => {
       stopPlaying()
-      options.callback(options.fromInternal(n.from))
+      if (options.callback) options.callback(options.fromInternal(n.from))
     },
-    onUpdate: n => options.callback(options.fromInternal(n.from)),
+    onUpdate: n => (options.callback) ? options.callback(options.fromInternal(n.from)) : null,
   }
   $('<input type="text" id="timesliderElement">').appendTo('#timeslider').ionRangeSlider(optionsInternal)
   const slider = $('#timesliderElement').data('ionRangeSlider')
