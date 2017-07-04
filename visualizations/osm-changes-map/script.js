@@ -70,7 +70,7 @@ $(document).ready(() => {
       }
       
       // slider
-      sliderTime({
+      new SliderTime({
         min: moment('00:00', 'HH:mm'),
         max: moment('24:00', 'HH:mm'),
         fromMax: moment('23:50', 'HH:mm'),

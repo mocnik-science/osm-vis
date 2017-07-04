@@ -198,7 +198,7 @@ $(document).ready(() => {
     }
     
     // slider
-    sliderTime({
+    new SliderTime({
       min: datesMin,
       max: datesMax,
       fromFraction: [2, 1],

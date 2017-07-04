@@ -65,105 +65,107 @@ const derive = attrs => (d, n, a) => {
 }
 
 /* SLIDER TIME */
-const sliderTime = options => {
-  options = R.merge({
-    min: null,
-    max: null,
-    from: null,
-    fromMin: null,
-    fromMax: null,
-    fromFraction: [1, 1],
-    step: 1,
-    toInternal: m => m.unix(),
-    fromInternal: n => moment.unix(n),
-    formatShow: 'LL',
-    show: m => m.format(options.formatShow),
-    callback: m => {},
-    width: 100,
-    label: null,
-    labelLeft: null,
-    playing: false,
-    playingHide: true,
-    playingSpeed: 1,
-    playingFrameRate: 30,
-    playingRestartOnEnd: true,
-  }, options)
-  const optionsInternal = {
-    min: options.toInternal(options.min),
-    max: options.toInternal(options.max),
-    from: (options.from) ? options.toInternal(options.from) : options.toInternal(options.min) / (options.fromFraction[0] + options.fromFraction[1]) * options.fromFraction[0] + options.toInternal(options.max) / (options.fromFraction[0] + options.fromFraction[1]) * options.fromFraction[1],
-    from_min: (options.fromMin) ? options.toInternal(options.fromMin) : false,
-    from_max: (options.fromMax) ? options.toInternal(options.fromMax) : false,
-    grid: true,
-    force_edges: true,
-    hide_min_max: true,
-    hide_from_to: true,
-    grid_num: 6,
-    step: options.step,
-    prettify: n => options.show(options.fromInternal(n)),
-    keyboard: true,
-    keyboard_step: 2,
-    onChange: n => {
-      stopPlaying()
-      if (options.callback) options.callback(options.fromInternal(n.from))
-    },
-    onUpdate: n => (options.callback) ? options.callback(options.fromInternal(n.from)) : null,
-  }
-  $('<input type="text" id="timesliderElement">').appendTo('#timeslider').ionRangeSlider(optionsInternal)
-  const slider = $('#timesliderElement').data('ionRangeSlider')
-  const sliderIncrementFrom = dFrom => {
-    var isAtMax = false
-    slider.result.from += dFrom
-    if (slider.result.from >= ((optionsInternal.from_max) ? optionsInternal.from_max : optionsInternal.max)) {
-      if (options.playingRestartOnEnd) slider.result.from = (optionsInternal.from_min) ? optionsInternal.from_min : optionsInternal.min
-      else {
-        isAtMax = true
-        slider.result.from = (optionsInternal.from_max) ? optionsInternal.from_max : optionsInternal.max
-      }
+class SliderTime {
+  constructor(options) {
+    options = this.options = R.merge({
+      min: null,
+      max: null,
+      from: null,
+      fromMin: null,
+      fromMax: null,
+      fromFraction: [1, 1],
+      step: 1,
+      toInternal: m => m.unix(),
+      fromInternal: n => moment.unix(n),
+      formatShow: 'LL',
+      show: m => m.format(options.formatShow),
+      callback: m => {},
+      width: 100,
+      label: null,
+      labelLeft: null,
+      playing: false,
+      playingHide: true,
+      playingSpeed: 1,
+      playingFrameRate: 30,
+      playingRestartOnEnd: true,
+    }, options)
+    const _optionsInternal = this._optionsInternal = {
+      min: options.toInternal(options.min),
+      max: options.toInternal(options.max),
+      from: (options.from) ? options.toInternal(options.from) : options.toInternal(options.min) / (options.fromFraction[0] + options.fromFraction[1]) * options.fromFraction[0] + options.toInternal(options.max) / (options.fromFraction[0] + options.fromFraction[1]) * options.fromFraction[1],
+      from_min: (options.fromMin) ? options.toInternal(options.fromMin) : false,
+      from_max: (options.fromMax) ? options.toInternal(options.fromMax) : false,
+      grid: true,
+      force_edges: true,
+      hide_min_max: true,
+      hide_from_to: true,
+      grid_num: 6,
+      step: options.step,
+      prettify: n => options.show(options.fromInternal(n)),
+      keyboard: true,
+      keyboard_step: 2,
+      onChange: n => {
+        stopPlaying()
+        if (options.callback) options.callback(options.fromInternal(n.from))
+      },
+      onUpdate: n => (options.callback) ? options.callback(options.fromInternal(n.from)) : null,
     }
-    slider.options.from = slider.result.from
-    const w = (slider.options.max - slider.options.min) / 100
-    const f = (slider.result.from - slider.options.min) / w
-    slider.coords.p_single_real = slider.toFixed(f)
-    slider.coords.p_single_real = slider.checkDiapason(slider.coords.p_single_real, slider.options.from_min, slider.options.from_max);
-    slider.coords.p_single_fake = slider.convertToFakePercent(slider.coords.p_single_real);
-    slider.coords.p_bar_x = slider.coords.p_handle / 2
-    slider.coords.p_bar_w = slider.coords.p_single_fake
-    $('.irs-bar').css({
-      left: slider.coords.p_bar_x + '%',
-      width: slider.coords.p_bar_w + '%',
-    })
-    $('.irs-slider').css({
-      left: slider.coords.p_bar_w + '%',
-    })
-    slider.options.onUpdate(slider.result)
-    return isAtMax
-  }
-  slider.reset()
-  $('#timeslider').css('marginLeft', -options.width/2)
-  $('#timeslider .irs').css('width', options.width)
-  if (options.label) $('<div class="timesliderLabel">' + options.label + '</div>').appendTo('#timeslider')
-  if (options.labelLeft) $('<div class="timesliderLabelLeft">' + options.labelLeft + '</div>').appendTo('#timeslider')
-  var intervalTimer = null
-  const stopPlaying = () => {
-    options.playing = false
+    $('<input type="text" id="timesliderElement">').appendTo('#timeslider').ionRangeSlider(_optionsInternal)
+    const slider = $('#timesliderElement').data('ionRangeSlider')
+    const sliderIncrementFrom = dFrom => {
+      var isAtMax = false
+      slider.result.from += dFrom
+      if (slider.result.from >= ((_optionsInternal.from_max) ? _optionsInternal.from_max : _optionsInternal.max)) {
+        if (options.playingRestartOnEnd) slider.result.from = (_optionsInternal.from_min) ? _optionsInternal.from_min : _optionsInternal.min
+        else {
+          isAtMax = true
+          slider.result.from = (_optionsInternal.from_max) ? _optionsInternal.from_max : _optionsInternal.max
+        }
+      }
+      slider.options.from = slider.result.from
+      const w = (slider.options.max - slider.options.min) / 100
+      const f = (slider.result.from - slider.options.min) / w
+      slider.coords.p_single_real = slider.toFixed(f)
+      slider.coords.p_single_real = slider.checkDiapason(slider.coords.p_single_real, slider.options.from_min, slider.options.from_max);
+      slider.coords.p_single_fake = slider.convertToFakePercent(slider.coords.p_single_real);
+      slider.coords.p_bar_x = slider.coords.p_handle / 2
+      slider.coords.p_bar_w = slider.coords.p_single_fake
+      $('.irs-bar').css({
+        left: slider.coords.p_bar_x + '%',
+        width: slider.coords.p_bar_w + '%',
+      })
+      $('.irs-slider').css({
+        left: slider.coords.p_bar_w + '%',
+      })
+      slider.options.onUpdate(slider.result)
+      return isAtMax
+    }
+    slider.reset()
+    $('#timeslider').css('marginLeft', -options.width/2)
+    $('#timeslider .irs').css('width', options.width)
+    if (options.label) $('<div class="timesliderLabel">' + options.label + '</div>').appendTo('#timeslider')
+    if (options.labelLeft) $('<div class="timesliderLabelLeft">' + options.labelLeft + '</div>').appendTo('#timeslider')
+    var intervalTimer = null
+    const stopPlaying = () => {
+      options.playing = false
+      initPlaying()
+    }
+    const initPlaying = () => {
+      $('.timesliderPlaying').text(options.playing ? 'stop' : 'play')
+      if (options.playing) intervalTimer = setInterval(() => {
+        if (sliderIncrementFrom(options.playingSpeed * options.playingFrameRate)) stopPlaying()
+      }, options.playingInterval)
+      else clearInterval(intervalTimer)
+    }
+    if (!options.playingHide) {
+      $('<div class="timesliderPlaying"></div>').appendTo('#timeslider').on('click', event => {
+        event.preventDefault()
+        options.playing = !options.playing
+        initPlaying()
+      })
+    }
     initPlaying()
   }
-  const initPlaying = () => {
-    $('.timesliderPlaying').text(options.playing ? 'stop' : 'play')
-    if (options.playing) intervalTimer = setInterval(() => {
-      if (sliderIncrementFrom(options.playingSpeed * options.playingFrameRate)) stopPlaying()
-    }, options.playingInterval)
-    else clearInterval(intervalTimer)
-  }
-  if (!options.playingHide) {
-    $('<div class="timesliderPlaying"></div>').appendTo('#timeslider').on('click', event => {
-      event.preventDefault()
-      options.playing = !options.playing
-      initPlaying()
-    })
-  }
-  initPlaying()
 }
 
 /* DATA TOOLTIP */
