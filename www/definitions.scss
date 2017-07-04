@@ -25,3 +25,6 @@ $fontSizeLarge: 16px;
 $fontSize: 13px;
 $fontSizeSemiSmall: 12px;
 $fontSizeSmall: 10px;
+
+$colorTranslucentBackground: rgba(255, 255, 255, .96);
+$whiteShadow: 0 0 3px $colorTranslucentBackground, 0 0 3px $colorTranslucentBackground, 0 0 6px $colorTranslucentBackground, 0 0 9px $colorTranslucentBackground, 0 0 9px $colorTranslucentBackground, 0 0 9px $colorTranslucentBackground, 0 0 20px $colorTranslucentBackground, 0 0 20px $colorTranslucentBackground, 0 0 20px $colorTranslucentBackground, 0 0 20px $colorTranslucentBackground;

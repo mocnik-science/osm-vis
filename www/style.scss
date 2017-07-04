@@ -19,6 +19,9 @@ h1, h2, h3, h4, h5, h6 {
 h1:first-letter, h2:first-letter, h3:first-letter, h4:first-letter, h5:first-letter, h6:first-letter {
   text-transform: uppercase;
 }
+h1 {
+  text-shadow: $whiteShadow;
+}
 a {
   color: $textColor;
   text-decoration: underline;
@@ -146,7 +149,7 @@ body.scrolling {
     top: 0;
     margin-top: 0;
     padding-bottom: 10px;
-    background: rgba(255, 255, 255, .96);
+    background: $colorTranslucentBackground;
   }
 }
 /** TIME SLIDER **/
@@ -156,15 +159,15 @@ body.scrolling {
   left: 50%;
   bottom: 6px;
   padding: 0 12px 6px 12px;
-  background: rgba(255, 255, 255, .96);
+  background: $colorTranslucentBackground;
   .irs.js-irs-0 {
     margin-top: -12px;
   }
   .timesliderLabelDefault {
     position: absolute;
     top: -14px;
-    background: rgba(255, 255, 255, .96);
     padding: 6px 0;
+    background: $colorTranslucentBackground;
   }
   .timesliderLabelTextDefault {
     font-size: $fontSizeSmall;
@@ -222,6 +225,7 @@ body.scrolling {
   top: 18px;
   text-decoration: none;
   color: $colorPrimaryLightText;
+  text-shadow: $whiteShadow;
 }
 .qtip-info {
   border: 1px solid $colorDataTooltipBorder!important;
@@ -255,6 +259,7 @@ $infoTransitionDuration: .2s;
   background-color: $colorGreyVeryVeryLight;
   border: $infoButtonBorderWidth solid $colorGreyLight;
   cursor: pointer;
+  box-shadow: $whiteShadow;
   transition: background-color (2 * $infoTransitionDuration), border (2 * $infoTransitionDuration), $infoTransitionDuration width $infoTransitionDuration, $infoTransitionDuration height $infoTransitionDuration, $infoTransitionDuration border-radius $infoTransitionDuration, box-shadow (2 * $infoTransitionDuration);
   transition-timing-function: ease-in-out;
 }
@@ -372,6 +377,8 @@ $infoTransitionDuration: .2s;
   left: 30px;
   width: 200px;
   z-index: 1000;
+  background: $colorTranslucentBackground;
+  box-shadow: $whiteShadow;
   hr {
     border: 1px solid $colorGreyVeryLight;
     margin-top: 10px;
@@ -398,6 +405,9 @@ $infoTransitionDuration: .2s;
 }
 
 /* TIMELINE YEARS */
+#timeslider {
+  box-shadow: $whiteShadow;
+}
 .timelineYears-month {
   fill: none;
   stroke: $colorGreyVeryLight;

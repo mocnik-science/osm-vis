@@ -22,6 +22,11 @@ const libQTip2 = {name: 'qTip2', url: 'http://qtip2.com'}
 const libIonRangeSlider = {name: 'Ion.RangeSlider', url: 'http://ionden.com/a/plugins/ion.rangeSlider/en.html'}
 const libsDefault = [libD3, libMoment, libRamda, libJQuery, libQTip2]
 
+/* COLOURS */
+
+const colorPrimaryDark = '#4682b4'
+const colorPrimaryLight = '#a3c2db'
+
 /* HELPING FUNCTIONS */
 const range = (start, stop, step) => R.map(n => start + n * step, R.range(0, Math.ceil((stop - start) / step)))
 
@@ -563,5 +568,16 @@ class TimelineYears {
       .append('stop')
         .attr('offset', ([i, c]) => `${i * 100}%`)
         .attr('stop-color', ([i, c]) => c)
+  }
+}
+
+/* MAP */
+const mapPreventDrag = id => {
+  const div = L.DomUtil.get(id)
+  if (!L.Browser.touch) {
+    L.DomEvent.disableClickPropagation(div)
+    L.DomEvent.on(div, 'mousewheel', L.DomEvent.stopPropagation)
+  } else {
+    L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation)
   }
 }
