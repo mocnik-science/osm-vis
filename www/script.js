@@ -30,6 +30,12 @@ const colorPrimaryLight = '#a3c2db'
 /* HELPING FUNCTIONS */
 const range = (start, stop, step) => R.map(n => start + n * step, R.range(0, Math.ceil((stop - start) / step)))
 
+/* LOGO */
+$(document).ready(() => {
+  const logo = $('.logo').append('<span class="logo-first">OSM</span><span class="logo-second">vis</span>')
+  $('.logo').after(logo.clone())
+})
+
 /* SVG */
 const pageFixed = (width, height, offsetX, offsetY) => {
   return d3.select('body')

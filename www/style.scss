@@ -15,27 +15,31 @@ h1 {
 }
 h1, h2, h3, h4, h5, h6 {
   font-family: $fontFamilyAlternative;
+  text-shadow: $whiteShadow;
 }
 h1:first-letter, h2:first-letter, h3:first-letter, h4:first-letter, h5:first-letter, h6:first-letter {
   text-transform: uppercase;
-}
-h1 {
-  text-shadow: $whiteShadow;
 }
 a {
   color: $textColor;
   text-decoration: underline;
 }
 /** LOGO **/
-.logo:before {
-  content: 'OSM';
+.logo {
+  text-shadow: none;
+}
+.logo:first-child {
+  width: 0;
+  display: inline-block;
+  text-shadow: $whiteShadow;
+}
+.logo-first {
   font-size: 100%;
   font-weight: 500;
   font-family: 'Helvetica Neue', Helvetica, sans-serif;
   color: $colorGreyLight;
 }
-.logo:after {
-  content: 'vis';
+.logo-second {
   font-size: 110%;
   font-family: 'Waiting for the Sunrise', cursive;
   color: $colorPrimaryDark;
