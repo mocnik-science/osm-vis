@@ -163,8 +163,8 @@ body.scrolling {
   .timesliderLabelDefault {
     position: absolute;
     top: -14px;
-    padding: 6px;
     background: rgba(255, 255, 255, .96);
+    padding: 6px 0;
   }
   .timesliderLabelTextDefault {
     font-size: $fontSizeSmall;
@@ -175,7 +175,7 @@ body.scrolling {
     @extend .timesliderLabelTextDefault;
     text-align: center;
     width: 100%;
-    left: -6px;
+    left: 0;
   }
   .timesliderLabelLeft {
     @extend .timesliderLabelDefault;
