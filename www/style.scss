@@ -452,6 +452,13 @@ $infoTransitionDuration: .2s;
 }
 
 /* MAPS */
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
 .leaflet-container {
   background-color: #fff;
   .leaflet-control-attribution {
