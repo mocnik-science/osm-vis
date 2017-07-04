@@ -111,7 +111,7 @@ class SliderTime {
       onUpdate: n => (options.callback) ? options.callback(options.fromInternal(n.from)) : null,
     }
     $('<input type="text" id="timesliderElement">').appendTo('#timeslider').ionRangeSlider(_optionsInternal)
-    const slider = $('#timesliderElement').data('ionRangeSlider')
+    const slider = this._slider = $('#timesliderElement').data('ionRangeSlider')
     const sliderIncrementFrom = dFrom => {
       var isAtMax = false
       slider.result.from += dFrom
@@ -165,6 +165,11 @@ class SliderTime {
       })
     }
     initPlaying()
+  }
+  setCallback(callback) {
+    this.options.callback = callback
+    this._optionsInternal.onUpdate(this._slider.result)
+    return this
   }
 }
 
