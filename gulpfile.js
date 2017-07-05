@@ -10,6 +10,7 @@ const gulp = require('gulp')
 const inject = require('gulp-inject')
 const merge = require('merge-stream')
 const sass = require('gulp-sass')
+const gzip = require('gulp-gzip')
 
 const wwwDist = './www-dist/'
 const baseVisualizations = './visualizations/'
@@ -28,8 +29,27 @@ const makeJs = g =>
     }))
 const injectJs = g => (!fs.existsSync('inject.html')) ? g : g.pipe(inject(gulp.src('inject.html'), {starttag: '<!-- inject:inject -->', transform: (filepath, file) => file.contents.toString('utf-8')}))
 
-gulp.task('default', ['clean'], () => merge(
+gulp.task('default', ['gzip'], () => {})
+
+gulp.task('gzip', ['dist', 'gzip2'], () => gulp.src([
+        wwwDist + '**/*.html',
+        wwwDist + '**/*.js',
+        wwwDist + '**/*.css',
+    ])
+    .pipe(gzip({level: 9}))
+    .pipe(gulp.dest(wwwDist))
+)
+
+gulp.task('gzip2', ['dist'], () => gulp.src([
+        wwwDist + 'data/**',
+    ])
+    .pipe(gzip({level: 9}))
+    .pipe(gulp.dest(wwwDist + 'data/'))
+)
+
+gulp.task('dist', ['clean'], () => merge(
     gulp.src([
+            '.htaccess',
             'data/**',
             'src/**',
         ])

@@ -1,0 +1,10 @@
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  # deliver gz-compressed files
+  RewriteBase /
+  RewriteCond %{HTTP:Accept-Encoding} gzip
+  RewriteCond %{REQUEST_FILENAME}.gz -f
+  RewriteRule ^(.+)$ %{REQUEST_URI}.gz [QSA,L]
+  RemoveType .gz
+  AddEncoding x-gzip .gz
+</IfModule>
