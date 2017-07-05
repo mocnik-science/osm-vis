@@ -81,6 +81,7 @@ $(document).ready(() => {
     infoData: [heigitDB()],
     infoLibraries: libsDefault.concat([
       libIonRangeSlider,
+      libMomentRound,
     ]),
     init: () => {
       initTooltip({
