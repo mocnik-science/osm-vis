@@ -11,6 +11,22 @@ sudo iptables-unblocktcp 80  # osm-vis.geog.uni-heidelberg.de
 sudo ufw allow 'Nginx HTTP'  # otherwise
 ```
 
+## activate compression in nginx
+
+open `/etc/nginx/nginx.conf` and replace the following line:
+```
+        # gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+```
+by this line:
+```
+        gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript application/octet-stream;
+```
+
+proceed with:
+```bash
+sudo service nginx restart
+```
+
 ## install other software
 ```bash
 sudo apt-get install libcurl4-gnutls-dev
