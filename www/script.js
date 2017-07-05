@@ -355,17 +355,25 @@ class OptionsPanel {
       if (raiseOnStoreUpdate) options.onStoreUpdate(store)
     }
     
+    const getPairs = x => (x instanceof Array) ? x : R.toPairs(x)
+    const loop = (f, x) => {
+      if (x instanceof Array) R.forEach(keyData => f(keyData[0], keyData[1]), x)
+      else R.forEachObjIndexed((data, key) => f(key, data), x)
+    }
+    
     const addDivider = () => $('<hr>').appendTo(optionsPanel)
     const addGap = () => $('<div class="gap"></div>').appendTo(optionsPanel)
-    const addRadio = element => R.forEachObjIndexed((data, value) => {
-      updateStore({[element.name]: R.compose(R.head, R.head, R.filter(([k, element]) => R.is(Object, element) && element.selected), R.toPairs)(element.values)}, false)
-      $(`<div><label><input type="radio" name="${element.name}" value="${value}" ${(!R.is(String, data) && data.selected) ? 'checked="checked"' : ''}>${R.is(String, data) ? data : data.label}</label></div>`)
-        .appendTo(optionsPanel)
-        .find('input')
-        .on('click', function() {
-          updateStore({[element.name]: $(this).val()})
-        })
-    }, element.values)
+    const addRadio = element => {
+      updateStore({[element.name]: R.compose(R.head, R.head, R.filter(([k, element]) => R.is(Object, element) && element.selected))(getPairs(element.values))}, false)
+      loop((key, data) => {
+        $(`<div><label><input type="radio" name="${element.name}" value="${key}" ${(!R.is(String, data) && data.selected) ? 'checked="checked"' : ''}>${R.is(String, data) ? data : data.label}</label></div>`)
+          .appendTo(optionsPanel)
+          .find('input')
+          .on('click', function() {
+            updateStore({[element.name]: $(this).val()})
+          })
+      }, element.values)
+    }
     const addSelect = element => {
       updateStore({[element.name]: R.compose(R.head, R.head, R.filter(([k, element]) => R.is(Object, element) && element.selected), R.toPairs)(element.values)}, false)
       $(`<div><select name="${element.name}">` + R.compose(R.join(''), R.values, R.mapObjIndexed((data, value) => `<option value="${value}" ${(R.prop('selected', data)) ? 'selected="selected"' : ''}>${R.is(String, data) ? data : data.label}</option>`))(element.values) + '</select></div>')
