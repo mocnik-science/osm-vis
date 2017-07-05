@@ -84,7 +84,7 @@ class SliderTime {
       fromMax: null,
       fromFraction: [1, 1],
       step: 1,
-      toInternal: m => m.unix(),
+      toInternal: m => (m instanceof moment) ? m.unix() : m,
       fromInternal: n => moment.unix(n),
       formatShow: 'LL',
       show: m => m.format(options.formatShow),
@@ -114,70 +114,86 @@ class SliderTime {
       keyboard: true,
       keyboard_step: 2,
       onChange: n => {
-        stopPlaying()
+        this.stopPlaying()
         if (options.callback) options.callback(options.fromInternal(n.from))
       },
       onUpdate: n => (options.callback) ? options.callback(options.fromInternal(n.from)) : null,
     }
+    this._intervalTimer = null
     $('<input type="text" id="timesliderElement">').appendTo('#timeslider').ionRangeSlider(_optionsInternal)
     const slider = this._slider = $('#timesliderElement').data('ionRangeSlider')
-    const sliderIncrementFrom = dFrom => {
-      var isAtMax = false
-      slider.result.from += dFrom
-      if (slider.result.from >= ((_optionsInternal.from_max) ? _optionsInternal.from_max : _optionsInternal.max)) {
-        if (options.playingRestartOnEnd) slider.result.from = (_optionsInternal.from_min) ? _optionsInternal.from_min : _optionsInternal.min
-        else {
-          isAtMax = true
-          slider.result.from = (_optionsInternal.from_max) ? _optionsInternal.from_max : _optionsInternal.max
-        }
-      }
-      slider.options.from = slider.result.from
-      const w = (slider.options.max - slider.options.min) / 100
-      const f = (slider.result.from - slider.options.min) / w
-      slider.coords.p_single_real = slider.toFixed(f)
-      slider.coords.p_single_real = slider.checkDiapason(slider.coords.p_single_real, slider.options.from_min, slider.options.from_max);
-      slider.coords.p_single_fake = slider.convertToFakePercent(slider.coords.p_single_real);
-      slider.coords.p_bar_x = slider.coords.p_handle / 2
-      slider.coords.p_bar_w = slider.coords.p_single_fake
-      $('.irs-bar').css({
-        left: slider.coords.p_bar_x + '%',
-        width: slider.coords.p_bar_w + '%',
-      })
-      $('.irs-slider').css({
-        left: slider.coords.p_bar_w + '%',
-      })
-      slider.options.onUpdate(slider.result)
-      return isAtMax
-    }
     slider.reset()
     $('#timeslider').css('marginLeft', -options.width/2)
     $('#timeslider .irs').css('width', options.width)
     if (options.label) $('<div class="timesliderLabel">' + options.label + '</div>').appendTo('#timeslider')
     if (options.labelLeft) $('<div class="timesliderLabelLeft">' + options.labelLeft + '</div>').appendTo('#timeslider')
-    var intervalTimer = null
-    const stopPlaying = () => {
-      options.playing = false
-      initPlaying()
-    }
-    const initPlaying = () => {
-      $('.timesliderPlaying').text(options.playing ? 'stop' : 'play')
-      if (options.playing) intervalTimer = setInterval(() => {
-        if (sliderIncrementFrom(options.playingSpeed * options.playingFrameRate)) stopPlaying()
-      }, options.playingInterval)
-      else clearInterval(intervalTimer)
-    }
     if (!options.playingHide) {
       $('<div class="timesliderPlaying"></div>').appendTo('#timeslider').on('click', event => {
         event.preventDefault()
-        options.playing = !options.playing
-        initPlaying()
+        this.togglePlaying()
       })
     }
-    initPlaying()
+    this._initPlaying()
   }
   setCallback(callback) {
     this.options.callback = callback
     this._optionsInternal.onUpdate(this._slider.result)
+    return this
+  }
+  setFrom(x) {
+    const slider = this._slider
+    this._slider.result.from = this.options.toInternal(x)
+    slider.options.from = slider.result.from
+    const w = (slider.options.max - slider.options.min) / 100
+    const f = (slider.result.from - slider.options.min) / w
+    slider.coords.p_single_real = slider.toFixed(f)
+    slider.coords.p_single_real = slider.checkDiapason(slider.coords.p_single_real, slider.options.from_min, slider.options.from_max);
+    slider.coords.p_single_fake = slider.convertToFakePercent(slider.coords.p_single_real);
+    slider.coords.p_bar_x = slider.coords.p_handle / 2
+    slider.coords.p_bar_w = slider.coords.p_single_fake
+    $('.irs-bar').css({
+      left: slider.coords.p_bar_x + '%',
+      width: slider.coords.p_bar_w + '%',
+    })
+    $('.irs-slider').css({
+      left: slider.coords.p_bar_w + '%',
+    })
+    slider.options.onUpdate(slider.result)
+    return this
+  }
+  _sliderIncrementFrom(dFrom) {
+    var isAtMax = false
+    this._slider.result.from += dFrom
+    if (this._slider.result.from >= ((this._optionsInternal.from_max) ? this._optionsInternal.from_max : this._optionsInternal.max)) {
+      if (this.options.playingRestartOnEnd) this._slider.result.from = (this._optionsInternal.from_min) ? this._optionsInternal.from_min : this._optionsInternal.min
+      else {
+        isAtMax = true
+        this._slider.result.from = (this._optionsInternal.from_max) ? this._optionsInternal.from_max : this._optionsInternal.max
+      }
+    }
+    this.setFrom(this._slider.result.from)
+    return isAtMax
+  }
+  _initPlaying() {
+    $('.timesliderPlaying').text(this.options.playing ? 'stop' : 'play')
+    if (this.options.playing) this._intervalTimer = setInterval(() => {
+      if (this._sliderIncrementFrom(this.options.playingSpeed * this.options.playingFrameRate)) this.stopPlaying()
+    }, this.options.playingInterval)
+    else clearInterval(this._intervalTimer)
+  }
+  startPlaying() {
+    this.options.playing = true
+    this._initPlaying()
+    return this
+  }
+  stopPlaying() {
+    this.options.playing = false
+    this._initPlaying()
+    return this
+  }
+  togglePlaying() {
+    this.options.playing = !this.options.playing
+    this._initPlaying()
     return this
   }
 }
