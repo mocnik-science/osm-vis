@@ -26,7 +26,7 @@ const heigitDB = () => {
   return {
     dataTimestamp: moment().format(),
     dataDescription: 'data fetched from the HeiGIT HistoryDB database',
-    dataSource: 'OpenStreetMap project, <a href="http://wiki.openstreetmap.org/wiki/Wiki_content_license" target="_blank">CC BY-SA 2.0</a>',
+    dataSource: 'OpenStreetMap project,<br><a href="http://www.openstreetmap.org/copyright" target="_blank">various licenses (depending on time of contribution)</a>',
     dataUrl: 'http://heigit.org',
   }
 }
