@@ -18,19 +18,20 @@ $(document).ready(() => {
   const redrawFunction = json => {
     return m => {
       if (json === null) return
-      const json2b = R.compose(R.reduce(R.maxBy(f => featureToTime(f).unix()), featureZeroTime), R.filter(f => moment(f.properties.timestamp).isSameOrBefore(m)))(json.features)
+      const json2b = R.compose(R.reduce(R.maxBy(f => featureToTime(f).unix()), featureZeroTime), R.filter(f => moment(f.properties.timestamp).isSameOrBefore(m)))(topojson.getObject(json).geometries)
       if (json2 == json2b) return
       json2 = json2b
       for (const l of svgLayers) l.removeFrom(map)
-      if (json2.geometry === undefined) return
-      svgLayers = [L.geoJSON(json2, {color: colorPrimaryDark, fillColor: colorPrimaryDark, fillOpacity: .4}).addTo(map)]
+      const geoJson = topojson.feature(json, json2)
+      if (geoJson.geometry === null) return
+      svgLayers = [L.geoJSON(geoJson, {color: colorPrimaryDark, fillColor: colorPrimaryDark, fillOpacity: .4}).addTo(map)]
       const drawNodes = cs => {
         if (cs instanceof Array) {
           if (cs[0] instanceof Array) R.forEach(drawNodes, cs)
           else svgLayers.push(L.circleMarker(R.reverse(cs), {color: colorPrimaryDark, fillColor: 'white', fillOpacity: 1, radius: 2, weight: 2}).addTo(map))
         }
       }
-      drawNodes(json2.geometry.coordinates)
+      drawNodes(geoJson.geometry.coordinates)
     }
   }
   
@@ -58,16 +59,15 @@ $(document).ready(() => {
         ],
       },
     ],
-    onStoreUpdate: store => $.getJSON(`../data/tmp/${store.data}.geojson`, json => {
+    onStoreUpdate: store => $.getJSON(`../data/tmp/${store.data}.topojson`, json => {
       // fit bounds of the map
-      const elementPolygon = L.geoJSON(json)
-      map.fitBounds(elementPolygon.getBounds(), {padding: [(window.innerWidth - width) / 2, (window.innerHeight - height) / 2]})
+      map.fitBounds(topojson.getBounds(json), {padding: [(window.innerWidth - width) / 2, (window.innerHeight - height) / 2]})
       
       // update redraw function
       slider.setCallback(redrawFunction(json))
       
       // move slider to the start of the element
-      const getTime = (f, tToCompare) => R.compose(R.reduce(f(t => t.unix()), tToCompare), R.map(featureToTime))(json.features)
+      const getTime = (f, tToCompare) => R.compose(R.reduce(f(t => t.unix()), tToCompare), R.map(featureToTime))(topojson.getObject(json).geometries)
       slider.stopPlaying()
       slider.setFrom(getTime(R.minBy, moment()))
     })
@@ -82,6 +82,7 @@ $(document).ready(() => {
     infoLibraries: libsDefault.concat([
       libIonRangeSlider,
       libMomentRound,
+      libTopoJSON,
     ]),
     init: () => {
       initTooltip({
