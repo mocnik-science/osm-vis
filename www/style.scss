@@ -391,6 +391,11 @@ $infoTransitionDuration: .2s;
     margin-top: 10px;
     margin-bottom: 10px;
   }
+  label {
+    display: block;
+    padding-left: 22px;
+    text-indent: -22px;
+  }
   input {
     position: relative;
     bottom: 1px;
