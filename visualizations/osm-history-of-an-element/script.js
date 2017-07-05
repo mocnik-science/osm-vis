@@ -32,10 +32,10 @@ $(document).ready(() => {
   const slider = new SliderTime({
     min: moment(timestampMin),
     max: moment(),
-    fromFraction: [6, 2],
     width: width,
     playingHide: false,
     playingSpeed: 1250,
+    playingRestartOnEnd: false,
   })
   
   // options panel
@@ -57,6 +57,11 @@ $(document).ready(() => {
       
       // update redraw function
       slider.setCallback(redrawFunction(json))
+      
+      // move slider to the start of the element
+      const getTime = (f, tToCompare) => R.compose(R.reduce(f(t => t.unix()), tToCompare), R.map(featureToTime))(json.features)
+      slider.stopPlaying()
+      slider.setFrom(getTime(R.minBy, moment()))
     })
   })
   
