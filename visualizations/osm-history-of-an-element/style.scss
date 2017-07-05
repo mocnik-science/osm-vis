@@ -2,6 +2,10 @@
 
 .panel {
   width: 240px;
+  label {
+    line-height: 6px;
+    margin-bottom: 6px;
+  }
 }
 .leaflet-interactive {
   cursor: inherit;
