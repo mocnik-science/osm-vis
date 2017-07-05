@@ -1,6 +1,6 @@
 const width = .9 * window.innerWidth
-const height = .96 * window.innerHeight - 160
-const timestampMin = '2012-01-01T00:00:00Z'
+const height = .96 * window.innerHeight - 180
+const timestampMin = '2008-08-01T00:00:00Z'
 
 $(document).ready(() => {
   // helping functions
@@ -8,7 +8,7 @@ $(document).ready(() => {
   const featureToTime = f => moment(f.properties.timestamp)
   
   // map
-  const map = L.map('map', {zoomControl: false, zoomSnap: 0})
+  const map = L.map('map', {zoomControl: false, zoomSnap: 0, scrollWheelZoom: false, touchZoom: false})
   new L.StamenTileLayer('toner').setOpacity(.14).addTo(map)
   mapPreventDrag('timeslider')
   
@@ -24,7 +24,13 @@ $(document).ready(() => {
       for (const l of svgLayers) l.removeFrom(map)
       if (json2.geometry === undefined) return
       svgLayers = [L.geoJSON(json2, {color: colorPrimaryDark, fillColor: colorPrimaryDark, fillOpacity: .4}).addTo(map)]
-      for (const p of json2.geometry.coordinates[0]) svgLayers.push(L.circleMarker(R.reverse(p), {color: colorPrimaryDark, fillColor: 'white', fillOpacity: 1, radius: 4}).addTo(map))
+      const drawNodes = cs => {
+        if (cs instanceof Array) {
+          if (cs[0] instanceof Array) R.forEach(drawNodes, cs)
+          else svgLayers.push(L.circleMarker(R.reverse(cs), {color: colorPrimaryDark, fillColor: 'white', fillOpacity: 1, radius: 2, weight: 2}).addTo(map))
+        }
+      }
+      drawNodes(json2.geometry.coordinates)
     }
   }
   
@@ -44,13 +50,15 @@ $(document).ready(() => {
       {
         type: 'radio',
         name: 'data',
-        values: {
-          254154168: {label: 'Heidelberg Castle', selected: true},
-          0: '...',
-        },
+        values: [
+          ['r60105', {label: 'Mannheim Palace (Germany)', selected: true}],
+          ['w254154168', 'Heidelberg Castle (Germany)'],
+          ['w150834648', 'Luisenpark, Mannheim (Germany)'],
+          ['w26946230', 'New Campus ‘Neuenheimer Feld’, Heidelberg (Germany)'],
+        ],
       },
     ],
-    onStoreUpdate: store => $.getJSON(`../data/tmp/${store.data}.geojson`, json => {  
+    onStoreUpdate: store => $.getJSON(`../data/tmp/${store.data}.geojson`, json => {
       // fit bounds of the map
       const elementPolygon = L.geoJSON(json)
       map.fitBounds(elementPolygon.getBounds(), {padding: [(window.innerWidth - width) / 2, (window.innerHeight - height) / 2]})
