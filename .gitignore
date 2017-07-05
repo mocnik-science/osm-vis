@@ -1,7 +1,7 @@
 .cabal-sandbox
 cabal.sandbox.config
 *.log
-data
+data/*.*
 dist
 node_modules
 src/components
