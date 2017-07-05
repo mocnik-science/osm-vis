@@ -627,3 +627,12 @@ const mapPreventDrag = id => {
     L.DomEvent.on(div, 'click', L.DomEvent.stopPropagation)
   }
 }
+
+/* TOPOJSON */
+if (topojson) {
+  topojson.getBounds = json => {
+    const [b, a, d, c] = topojson.bbox(json)
+    return [[a, b], [c, d]]
+  }
+  topojson.getObject = json => Object.values(json.objects)[0]
+}
