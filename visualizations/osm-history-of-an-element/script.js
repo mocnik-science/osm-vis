@@ -1,6 +1,6 @@
 const width = .9 * window.innerWidth
 const height = .96 * window.innerHeight - 180
-const timestampMin = '2008-08-01T00:00:00Z'
+const timestampMin = '2007-08-01T00:00:00Z'
 
 $(document).ready(() => {
   // helping functions
@@ -56,6 +56,8 @@ $(document).ready(() => {
           ['w254154168', 'Heidelberg Castle (Germany)'],
           ['w150834648', 'Luisenpark, Mannheim (Germany)'],
           ['w26946230', 'New Campus ‘Neuenheimer Feld’, Heidelberg (Germany)'],
+          ['w5182648', 'Heidelberg Zoo (Germany)'],
+          ['w154937898', 'residential area in Heidelberg (Germany)'],
         ],
       },
     ],
