@@ -8,7 +8,7 @@ $(document).ready(() => {
   const featureToTime = f => moment(f.properties.timestamp)
   
   // map
-  const map = L.map('map', {zoomControl: false, zoomSnap: 0, scrollWheelZoom: false, touchZoom: false})
+  const map = L.map('map', {zoomControl: false, zoomSnap: 0, scrollWheelZoom: false, touchZoom: false, dragging: false})
   new L.StamenTileLayer('toner').setOpacity(.14).addTo(map)
   mapPreventDrag('timeslider')
   
