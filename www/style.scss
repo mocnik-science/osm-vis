@@ -381,10 +381,11 @@ $infoTransitionDuration: .2s;
   position: absolute;
   bottom: 90px;
   left: 30px;
-  width: 200px;
+  width: 170px;
   z-index: 1000;
   background: $colorTranslucentBackground;
   box-shadow: $whiteShadow;
+  font-size: $fontSize;
   hr {
     border: 1px solid $colorGreyVeryLight;
     margin-top: 10px;
