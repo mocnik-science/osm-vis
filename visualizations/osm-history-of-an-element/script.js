@@ -41,7 +41,7 @@ $(document).ready(() => {
     max: moment(),
     width: width,
     playingHide: false,
-    playingSpeed: 1250,
+    playingSpeed: 10000,
     playingRestartOnEnd: false,
   })
   
