@@ -178,7 +178,7 @@ class SliderTime {
     $('.timesliderPlaying').text(this.options.playing ? 'stop' : 'play')
     if (this.options.playing) this._intervalTimer = setInterval(() => {
       if (this._sliderIncrementFrom(this.options.playingSpeed * this.options.playingFrameRate)) this.stopPlaying()
-    }, this.options.playingInterval)
+    }, this.options.playingFrameRate)
     else clearInterval(this._intervalTimer)
   }
   startPlaying() {
