@@ -629,7 +629,7 @@ const mapPreventDrag = id => {
 }
 
 /* TOPOJSON */
-if (topojson) {
+if (typeof topojson !== 'undefined') {
   topojson.getBounds = json => {
     const [b, a, d, c] = topojson.bbox(json)
     return [[a, b], [c, d]]
