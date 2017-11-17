@@ -13,7 +13,7 @@ A running version of OSMvis can be found on:
 
 The data that is visualized can either be mined as described in the following section, or by downloading it from the following repository:
 
-[http://github.com/mocnik-science/osm-vis-data](http://github.com/mocnik-science/osm-vis-data)
+[http://github.com/GIScience/osm-vis-data](http://github.com/GIScience/osm-vis-data)
 
 Please prefer using this data to avoid accessing the original data sources to frequently.
 

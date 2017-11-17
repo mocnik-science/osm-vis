@@ -61,7 +61,7 @@ ln -s /var/www/html www
 cd ~/www && sudo rm index.nginx-debian.html
 sudo chown fmocnik:fmocnik /var/www/html  # replace with correct username
 cd ~ && git clone https://github.com/mocnik-science/osm-vis
-cd ~ && git clone ssh://git@github-osm-vis/mocnik-science/osm-vis-data.git
+cd ~ && git clone ssh://git@github-osm-vis/GIScience/osm-vis-data.git
 git config --global user.email "mocnik@uni-heidelberg.de"
 git config --global user.name "Franz-Benjamin Mocnik"
 ```
