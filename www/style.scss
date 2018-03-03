@@ -64,10 +64,13 @@ body.index {
   margin-left: auto;
   margin-right: auto;
   .description {
-    width: 760px;
+    width: 770px;
     margin: 40px auto 20px auto;
     text-align: center;
     font-style: italic;
+      ul {
+        list-style-type: none;
+      }
   }
   .comments {
     width: 760px;
