@@ -9,6 +9,12 @@ A running version of OSMvis can be found on:
 * **[http://osm-vis.geog.uni-heidelberg.de](http://osm-vis.geog.uni-heidelberg.de)**, and
 * **[http://projects.mocnik-science.net/osm-vis/](http://projects.mocnik-science.net/osm-vis/)**.
 
+## Scientific Publications
+
+The following publication is related to OSMvis:
+
+* F.-B. Mocnik, A. Zipf, M. Raifer: **The OpenStreetMap folksonomy and its evolution.** Geo-spatial Information Science 20(3), 2017, 219–230
+
 ## Data
 
 The data that is visualized can either be mined as described in the following section, or by downloading it from the following repository:
@@ -47,6 +53,6 @@ The author would like to thank the following persons for providing useful commen
 
 This application is written and maintained by Franz-Benjamin Mocnik, <mail@mocnik-science.net>. Conbributions were made by Martin Raifer.
 
-(c) by Franz-Benjamin Mocnik, 2016.
+(c) by Franz-Benjamin Mocnik, 2016–2018.
 
 The code is licensed under the [GPL-3](http://github.com/mocnik-science/osm-vis/blob/master/LICENSE.md).
