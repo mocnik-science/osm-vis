@@ -13,7 +13,7 @@ A running version of OSMvis can be found on:
 
 The following publication is related to OSMvis:
 
-* F.-B. Mocnik, A. Zipf, M. Raifer: **The OpenStreetMap Folksonomy and Its Evolution.** Geo-spatial Information Science 20(3), 2017, 219–230
+* F.-B. Mocnik, A. Zipf, M. Raifer: [**The OpenStreetMap Folksonomy and Its Evolution.**](http://doi.org/10.1080/10095020.2017.1368193) Geo-spatial Information Science 20(3), 2017, 219–230. doi: 10.1080/10095020.2017.1368193
 
 ## Data
 
