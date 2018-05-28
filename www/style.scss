@@ -59,7 +59,12 @@ a {
   font-size: 30px;
   margin-bottom: 40px;
 }
-reference-title {
+ul.references li {
+  margin-top: 10px;
+  margin-left: -40px;
+  margin-right: -40px;
+}
+.reference-title {
   font-weight: 500;
 }
 body.index {
