@@ -28,6 +28,7 @@ const makeJs = g =>
         comments: false,
     }))
 const injectJs = g => (!fs.existsSync('inject.html')) ? g : g.pipe(inject(gulp.src('inject.html'), {starttag: '<!-- inject:inject -->', transform: (filepath, file) => file.contents.toString('utf-8')}))
+const injectComment = g => (!fs.existsSync('inject-comment.html')) ? g : g.pipe(inject(gulp.src('inject-comment.html'), {starttag: '<!-- inject:inject-comment -->', transform: (filepath, file) => file.contents.toString('utf-8')}))
 
 gulp.task('default', ['gzip'], () => {})
 
@@ -55,6 +56,8 @@ gulp.task('dist', ['clean'], () => merge(
         ])
         .pipe(copy(wwwDist)),
     injectJs(gulp.src(['www/index.html']))
+        .pipe(gulp.dest(wwwDist)),
+    injectComment(gulp.src(['www/index.html']))
         .pipe(gulp.dest(wwwDist)),
     gulp.src(['www/*/**'])
         .pipe(copy(wwwDist)),
