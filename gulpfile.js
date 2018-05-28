@@ -55,9 +55,7 @@ gulp.task('dist', ['clean'], () => merge(
             'src/**',
         ])
         .pipe(copy(wwwDist)),
-    injectJs(gulp.src(['www/index.html']))
-        .pipe(gulp.dest(wwwDist)),
-    injectComment(gulp.src(['www/index.html']))
+    injectComment(injectJs(gulp.src(['www/index.html'])))
         .pipe(gulp.dest(wwwDist)),
     gulp.src(['www/*/**'])
         .pipe(copy(wwwDist)),
