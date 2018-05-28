@@ -134,7 +134,7 @@ git config --global user.name "Franz-Benjamin Mocnik"
 Create a file `/home/f/fmocnik/osm-vis/inject-comment.html` (via `vi`) with the following content:
 
 ```
-<a href="https://www.uni-heidelberg.de/privacypolicy_web.html" target="_blank>privacy policy</a>
+<br><a href="https://www.uni-heidelberg.de/privacypolicy_web.html" target="_blank>privacy policy</a>
 ```
 
 ## install needed software and configurations
