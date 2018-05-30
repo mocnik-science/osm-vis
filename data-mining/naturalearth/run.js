@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const URL = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson.gz'
+const URL = 'https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_land.geojson'
 const DATA_PATH = '../../data'
 const DATA_FILE_GEO = 'ne_110m_admin_0_countries.geojson'
 const DATA_FILE_GEO_TMP = 'countries.geojson'
@@ -13,7 +13,7 @@ const jsonfile = require('jsonfile')
 const moment = require('moment')
 
 execSync(`mkdir -p ${DATA_PATH}`)
-execSync(`curl ${URL} | gunzip > ${DATA_PATH}/${DATA_FILE_GEO}`)
+execSync(`curl ${URL} > ${DATA_PATH}/${DATA_FILE_GEO}`)
 const contentJson = jsonfile.readFileSync(`${DATA_PATH}/${DATA_FILE_GEO}`)
 contentJson.features = contentJson.features.map(feature => {
   feature.properties = {iso_a3: feature.properties['iso_a3'], name: feature.properties['name']}
