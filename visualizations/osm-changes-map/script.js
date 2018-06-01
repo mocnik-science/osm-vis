@@ -8,6 +8,7 @@ $(document).ready(() => {
       const dataTopoJson = datasetCountries.countries
       dataTopoJson.objects.countries.geometries = dataTopoJson.objects.countries.geometries.filter(d => d.properties.iso_a3 != 'ATA')
       const dataGeoJson = topojson.feature(dataTopoJson, dataTopoJson.objects.countries)
+      dataGeoJson.features = dataGeoJson.features.filter(f => f.bbox[1] > -70)
       
       // init svg
       const svg = pageFixed(width, height, 0, 16)
