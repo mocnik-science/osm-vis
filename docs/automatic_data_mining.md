@@ -82,7 +82,7 @@ Create a file `/etc/nginx/sites-available/https-redirect` (via `sudo vi`) with t
 ```
 server {
   listen 80;
-  listen [::]:80 ssl;
+  listen [::]:80;
 
   server_name osm-vis.geog.uni-heidelberg.de;
 
