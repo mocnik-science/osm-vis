@@ -101,8 +101,8 @@ Create a file `/etc/nginx/sites-available/osm-vis` (via `sudo vi`) with the foll
 
 ```
 server {
-  listen 443 ssl;
-  listen [::]:443 ssl;
+  listen 443 ssl http2;
+  listen [::]:443 ssl http2;
 
   server_name osm-vis.geog.uni-heidelberg.de;
 
