@@ -1,6 +1,6 @@
 # osm-vis/osm-node-changes-per-area
 
-The tool extracts the changes on nodes from [OSM replication diffs)[https://planet.openstreetmap.org/replication/day/] and aggregates them by space and time.
+The tool extracts the changes on nodes from [OSM replication diffs](https://planet.openstreetmap.org/replication/day/) and aggregates them by space and time.
 
 ## Installation
 
