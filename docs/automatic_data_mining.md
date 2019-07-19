@@ -144,7 +144,7 @@ sudo service nginx restart
 ```bash
 ln -s /var/www/html www
 cd ~/www && sudo rm index.nginx-debian.html
-sudo chown osmvis:osmvis /var/www/html  # replace with correct username
+sudo chown osmvis:osmvis /var/www/html
 cd ~ && git clone https://github.com/mocnik-science/osm-vis
 cd ~ && git clone ssh://git@github-osm-vis/GIScience/osm-vis-data.git
 git config --global user.email "sascha.fendrich@uni-heidelberg.de"
@@ -153,7 +153,7 @@ git config --global user.name "Sascha Fendrich"
 
 ## add inejction for privacy policy
 
-Create a file `/home/s/sfendrich/osm-vis/inject-comment.html` (via `vi`) with the following content:
+Create a file `/home/o/osmvis/osm-vis/inject-comment.html` (via `vi`) with the following content:
 
 ```
 <br><a href="https://www.uni-heidelberg.de/privacypolicy_web.html" target="_blank">privacy policy</a>
