@@ -151,7 +151,7 @@ git config --global user.email "sascha.fendrich@uni-heidelberg.de"
 git config --global user.name "Sascha Fendrich"
 ```
 
-## add inejction for privacy policy
+## add injection for privacy policy
 
 Create a file `/home/o/osmvis/osm-vis/inject-comment.html` (via `vi`) with the following content:
 
