@@ -37,10 +37,19 @@ cabal update && cabal install cabal-install
 sudo apt-get install npm
 ```
 
+### Create new user
+
+```bash
+sudo adduser --disabled-password osmvis
+echo "alias osmvis=\"sudo su -l osmvis\"" >> ~/.profile
+source ~/.profile
+osmvis
+```
+
 ## add key to the repository
 
 ```bash
-ssh-keygen -t rsa -C "mocnik@uni-heidelberg.de" -N "" -f ~/.ssh/id_rsa_osm-vis-data
+ssh-keygen -t rsa -C "sascha.fendrich@uni-heidelberg.de" -N "" -f ~/.ssh/id_rsa_osm-vis-data
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa_osm-vis-data
 ```
@@ -64,9 +73,15 @@ sudo add-apt-repository ppa:certbot/certbot
 sudo apt-get update
 sudo apt-get install -y certbot python-certbot-nginx
 
-sudo certbot --nginx --email mocnik@uni-heidelberg.de --agree-tos -n -d osm-vis.geog.uni-heidelberg.de -w /var/www/html
+sudo certbot --nginx --email sascha.fendrich@uni-heidelberg.de --agree-tos -n -d osm-vis.geog.uni-heidelberg.de -w /var/www/html
 #  --staging
 sudo shutdown -r now
+```
+
+Wait for reboot, then perform:
+
+```bash
+osmvis
 ```
 
 Then use `crontab -e` to add:
@@ -129,16 +144,16 @@ sudo service nginx restart
 ```bash
 ln -s /var/www/html www
 cd ~/www && sudo rm index.nginx-debian.html
-sudo chown fmocnik:fmocnik /var/www/html  # replace with correct username
+sudo chown osmvis:osmvis /var/www/html  # replace with correct username
 cd ~ && git clone https://github.com/mocnik-science/osm-vis
 cd ~ && git clone ssh://git@github-osm-vis/GIScience/osm-vis-data.git
-git config --global user.email "mocnik@uni-heidelberg.de"
-git config --global user.name "Franz-Benjamin Mocnik"
+git config --global user.email "sascha.fendrich@uni-heidelberg.de"
+git config --global user.name "Sascha Fendrich"
 ```
 
 ## add inejction for privacy policy
 
-Create a file `/home/f/fmocnik/osm-vis/inject-comment.html` (via `vi`) with the following content:
+Create a file `/home/s/sfendrich/osm-vis/inject-comment.html` (via `vi`) with the following content:
 
 ```
 <br><a href="https://www.uni-heidelberg.de/privacypolicy_web.html" target="_blank">privacy policy</a>
@@ -160,7 +175,7 @@ mkdir -p .git/hooks && ln -s ../../bin/hooks/post-merge .git/hooks/
 ## automatic pull of OSMvis
 
 ```bash
-crontab -u fmocnik -e  # replace with correct username
+crontab -u osmvis -e
 */1 * * * * /bin/sh -c 'cd ~/osm-vis && git pull origin master > /dev/null 2>&1'
 14 3 * * * /bin/sh -c 'cd ~/osm-vis && bin/data-mining-daily.sh > /dev/null 2>&1'
 14 4 1 * * /bin/sh -c 'cd ~/osm-vis && bin/data-mining-monthly.sh > /dev/null 2>&1'
