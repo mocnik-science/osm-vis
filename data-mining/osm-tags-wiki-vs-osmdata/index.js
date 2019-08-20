@@ -44,7 +44,9 @@ out.data.forEach(wikipage => {
         }
         callback(null, values)
       })
-      .catch(callback)
+      .catch(error => {
+        callback(null)
+      })
   })
 })
 
